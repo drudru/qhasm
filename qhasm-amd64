@@ -1,0 +1,36 @@
+#!/bin/sh
+sed 's/#.*//' \
+| sed 's/:/#/g' \
+| cat AMD64 - \
+| ./qhasm-ops \
+| ./qhasm-regs \
+| ./qhasm-fp \
+| ./qhasm-as \
+| sed 's/%32/d/g' \
+| sed 's/%raxd/%eax/g' \
+| sed 's/%rbxd/%ebx/g' \
+| sed 's/%rcxd/%ecx/g' \
+| sed 's/%rdxd/%edx/g' \
+| sed 's/%rsid/%esi/g' \
+| sed 's/%rdid/%edi/g' \
+| sed 's/%rbpd/%ebp/g' \
+| sed 's/%16/w/g' \
+| sed 's/%raxw/%ax/g' \
+| sed 's/%rbxw/%bx/g' \
+| sed 's/%rcxw/%cx/g' \
+| sed 's/%rdxw/%dx/g' \
+| sed 's/%rsiw/%si/g' \
+| sed 's/%rdiw/%di/g' \
+| sed 's/%rbpw/%bp/g' \
+| sed 's/%8/b/g' \
+| sed 's/%raxb/%al/g' \
+| sed 's/%rbxb/%bl/g' \
+| sed 's/%rcxb/%cl/g' \
+| sed 's/%rdxb/%dl/g' \
+| sed 's/%rsib/%sil/g' \
+| sed 's/%rdib/%dil/g' \
+| sed 's/%rbpb/%bpl/g' \
+| sed 's/%rax%next8/%ah/g' \
+| sed 's/%rbx%next8/%bh/g' \
+| sed 's/%rcx%next8/%ch/g' \
+| sed 's/%rdx%next8/%dh/g'

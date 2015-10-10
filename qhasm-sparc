@@ -1,0 +1,8 @@
+#!/bin/sh
+sed 's/#.*//' \
+| sed 's/:/#/g' \
+| cat SPARC - \
+| ./qhasm-ops \
+| ./qhasm-regs \
+| grep -v '^op:livefloat80:' \
+| ./qhasm-as

@@ -1,0 +1,16 @@
+#!/bin/sh
+sed 's/#.*//' \
+| sed 's/:/#/g' \
+| cat X86 - \
+| ./qhasm-ops \
+| ./qhasm-regs \
+| ./qhasm-fp \
+| ./qhasm-as \
+| sed 's/%eax%8/%al/g' \
+| sed 's/%ebx%8/%bl/g' \
+| sed 's/%ecx%8/%cl/g' \
+| sed 's/%edx%8/%dl/g' \
+| sed 's/%eax%next8/%ah/g' \
+| sed 's/%ebx%next8/%bh/g' \
+| sed 's/%ecx%next8/%ch/g' \
+| sed 's/%edx%next8/%dh/g'

@@ -1,0 +1,155 @@
+:name:int64:%i0:%i1:%i2:%i3:%i4:%i5:%g1:%g4:%g5:%o0:%o1:%o2:%o3:%o4:%o5:%o7:%l0:%l1:%l2:%l3:%l4:%l5:%l6:%l7:
+:name:float64:%f0:%f2:%f4:%f6:%f8:%f10:%f12:%f14:%f16:%f18:%f20:%f22:%f24:%f26:%f28:%f30:%f32:%f34:%f36:%f38:%f40:%f42:%f44:%f46:%f48:%f50:%f52:%f54:%f56:%f58:%f60:%f62:
+:flag:=:
+:flag:unsigned>:
+:flag:unsigned<:
+:flag:carry32:
+:stackalign:16:
+:stackname:::
+:stackbytes:stack32:4:
+:stackbytes:stack64:8:
+:stackbytes:stack128:16:
+:stackbytes:stack256:32:
+:stackbytes:stack512:64:
+:leftbytes:176:
+
+enter f:enter/f:asm/.section ".text":asm/.align 32:asm/.global #f:asm/#f!colon:asm/save %sp,-!frame,%sp:
+leave:leave:nofallthrough:asm/ret:asm/restore:
+
+input r:input/r:
+output r:output/r:
+int64 r:var/r=int64:
+float64 r:var/r=float64:
+stack64 r:var/r=stack64:
+stack128 r:var/r=stack128:
+stack256 r:var/r=stack256:
+stack512 r:var/r=stack512:
+
+nop:asm/nop:
+
+r = &s:>r=int64:>s=stack512:asm/add %fp,1967->s,>r:
+
+r = *(uint64 *) (s + n):>r=int64:<s=int64:#n:asm/ldx [<s+#n],>r:
+r = *(uint32 *) (s + n):>r=int64:<s=int64:#n:asm/lduw [<s+#n],>r:
+r = *(uint8 *) (s + n):>r=int64:<s=int64:#n:asm/ldub [<s+#n],>r:
+*(uint64 *) (s + n) = r:<r=int64:<s=int64:#n:asm/stx <r,[<s+#n]:
+*(uint32 *) (s + n) = r:<r=int64:<s=int64:#n:asm/stw <r,[<s+#n]:
+*(uint8 *) (s + n) = r:<r=int64:<s=int64:#n:asm/stb <r,[<s+#n]:
+r = *(int64 *) (s + n):>r=int64:<s=int64:#n:asm/ldx [<s+#n],>r:
+r = *(int32 *) (s + n):>r=int64:<s=int64:#n:asm/ldsw [<s+#n],>r:
+r = *(int8 *) (s + n):>r=int64:<s=int64:#n:asm/ldsb [<s+#n],>r:
+*(int64 *) (s + n) = r:<r=int64:<s=int64:#n:asm/stx <r,[<s+#n]:
+*(int32 *) (s + n) = r:<r=int64:<s=int64:#n:asm/stw <r,[<s+#n]:
+*(int8 *) (s + n) = r:<r=int64:<s=int64:#n:asm/stb <r,[<s+#n]:
+r = *(uint64 *) (s + t):>r=int64:<s=int64:<t=int64:asm/ldx [<s+<t],>r:
+r = *(uint32 *) (s + t):>r=int64:<s=int64:<t=int64:asm/lduw [<s+<t],>r:
+r = *(uint8 *) (s + t):>r=int64:<s=int64:<t=int64:asm/ldub [<s+<t],>r:
+*(uint64 *) (s + t) = r:<r=int64:<s=int64:<t=int64:asm/stx <r,[<s+<t]:
+*(uint32 *) (s + t) = r:<r=int64:<s=int64:<t=int64:asm/stw <r,[<s+<t]:
+*(uint8 *) (s + t) = r:<r=int64:<s=int64:<t=int64:asm/stb <r,[<s+<t]:
+r = *(int64 *) (s + t):>r=int64:<s=int64:<t=int64:asm/ldx [<s+<t],>r:
+r = *(int32 *) (s + t):>r=int64:<s=int64:<t=int64:asm/ldsw [<s+<t],>r:
+r = *(int8 *) (s + t):>r=int64:<s=int64:<t=int64:asm/ldsb [<s+<t],>r:
+*(int64 *) (s + t) = r:<r=int64:<s=int64:<t=int64:asm/stx <r,[<s+<t]:
+*(int32 *) (s + t) = r:<r=int64:<s=int64:<t=int64:asm/stw <r,[<s+<t]:
+*(int8 *) (s + t) = r:<r=int64:<s=int64:<t=int64:asm/stb <r,[<s+<t]:
+r = *(swapendian uint64 *) s:>r=int64:<s=int64:asm/ldxa [<s] 0x88,>r:
+r = *(swapendian uint32 *) s:>r=int64:<s=int64:asm/lduwa [<s] 0x88,>r:
+r = *(swapendian uint8 *) s:>r=int64:<s=int64:asm/lduba [<s] 0x88,>r:
+*(swapendian uint64 *) s = r:<r=int64:<s=int64:asm/stxa <r,[<s] 0x88:
+*(swapendian uint32 *) s = r:<r=int64:<s=int64:asm/stwa <r,[<s] 0x88:
+*(swapendian uint8 *) s = r:<r=int64:<s=int64:asm/stba <r,[<s] 0x88:
+r = *(swapendian int64 *) s:>r=int64:<s=int64:asm/ldxa [<s] 0x88,>r:
+r = *(swapendian int32 *) s:>r=int64:<s=int64:asm/ldswa [<s] 0x88,>r:
+r = *(swapendian int8 *) s:>r=int64:<s=int64:asm/ldsba [<s] 0x88,>r:
+*(swapendian int64 *) s = r:<r=int64:<s=int64:asm/stxa <r,[<s] 0x88:
+*(swapendian int32 *) s = r:<r=int64:<s=int64:asm/stwa <r,[<s] 0x88:
+*(swapendian int8 *) s = r:<r=int64:<s=int64:asm/stba <r,[<s] 0x88:
+
+r = (n & 0xfffffc0000000000) >> 32:>r=int64:#n:asm/sethi %hh(#n),>r:
+r |= (n & 0x3ff00000000) >> 32:>r=int64:<r=int64:#n:asm/or <r,%hm(#n),>r:
+r = n & 0xfffffc00:>r=int64:#n:asm/sethi %lm(#n),>r:
+r |= n & 0x3ff:>r=int64:<r=int64:#n:asm/or <r,%lo(#n),>r:
+r = n:>r=int64:#n:asm/add %g0,#n,>r:
+r = -n:>r=int64:#n:asm/sub %g0,#n,>r:
+
+r = s:>r=int64:<s=int64:asm/add %g0,<s,>r:
+r = s:>r=stack64:<s=int64:asm/stx <s,[%fp+2023->r]:
+r = s:>r=int64:<s=stack64:asm/ldx [%fp+2023-<s],>r:
+r = top32 s:>r=int64:<s=stack64:asm/ld [%fp+2023-<s],>r:
+r = bottom32 s:>r=int64:<s=stack64:asm/ld [%fp+2027-<s],>r:
+r = ~t:>r=int64:<t=int64:asm/not  <t,>r:
+r += t:>r=int64:<r=int64:<t=int64:asm/add <r,<t,>r:
+r += t:>r=int64:<r=int64:<t=int64:asm/addcc <r,<t,>r:>?unsigned>:>?unsigned<:>?=:>?carry32:
+r += t + carry32:>r=int64:<r=int64:<t=int64:<?carry32:asm/addccc <r,<t,>r:>?unsigned>:>?unsigned<:>?=:>?carry32:
+r -= t:>r=int64:<r=int64:<t=int64:asm/sub <r,<t,>r:
+r -= t:>r=int64:<r=int64:<t=int64:asm/subcc <r,<t,>r:>?unsigned>:>?unsigned<:>?=:>?carry32:
+r - t:<r=int64:<t=int64:asm/subcc <r,<t,%g0:>?unsigned>:>?unsigned<:>?=:>?carry32:
+r &= t:>r=int64:<r=int64:<t=int64:asm/and <r,<t,>r:
+r &= ~t:>r=int64:<r=int64:<t=int64:asm/andn <r,<t,>r:
+r |= t:>r=int64:<r=int64:<t=int64:asm/or  <r,<t,>r:
+r ^= t:>r=int64:<r=int64:<t=int64:asm/xor <r,<t,>r:
+r += n:>r=int64:<r=int64:#n:asm/add <r,#n,>r:
+r += n:>r=int64:<r=int64:#n:asm/addcc <r,#n,>r:>?unsigned>:>?unsigned<:>?=:>?carry32:
+r += n + carry32:>r=int64:<r=int64:<?carry32:#n:asm/addccc <r,#n,>r:>?unsigned>:>?unsigned<:>?=:>?carry32:
+r -= n:>r=int64:<r=int64:#n:asm/sub <r,#n,>r:
+r -= n:>r=int64:<r=int64:#n:asm/subcc <r,#n,>r:>?unsigned>:>?unsigned<:>?=:>?carry32:
+r - n:<r=int64:#n:asm/subcc <r,#n,%g0:>?unsigned>:>?unsigned<:>?=:>?carry32:
+r &= n:>r=int64:<r=int64:#n:asm/and <r,#n,>r:
+r |= n:>r=int64:<r=int64:#n:asm/or  <r,#n,>r:
+r ^= n:>r=int64:<r=int64:#n:asm/xor <r,#n,>r:
+(int32) r <<= n:>r=int64:<r=int64:#n:asm/sll <r,#n,>r:
+(int32) r >>= n:>r=int64:<r=int64:#n:asm/sra <r,#n,>r:
+(int64) r <<= n:>r=int64:<r=int64:#n:asm/sllx <r,#n,>r:
+(int64) r >>= n:>r=int64:<r=int64:#n:asm/srax <r,#n,>r:
+(uint32) r <<= n:>r=int64:<r=int64:#n:asm/sll <r,#n,>r:
+(uint32) r >>= n:>r=int64:<r=int64:#n:asm/srl <r,#n,>r:
+(uint64) r <<= n:>r=int64:<r=int64:#n:asm/sllx <r,#n,>r:
+(uint64) r >>= n:>r=int64:<r=int64:#n:asm/srlx <r,#n,>r:
+r <<= n:>r=int64:<r=int64:#n:asm/sllx <r,#n,>r:
+
+r = s + n:>r=int64:<s=int64:#n:asm/add <s,#n,>r:
+r = s + n:>r=int64:<s=int64:#n:asm/addcc <s,#n,>r:>?unsigned>:>?unsigned<:>?=:>?carry32:
+r = s + n + carry32:>r=int64:<s=int64:<?carry32:#n:asm/addccc <s,#n,>r:>?unsigned>:>?unsigned<:>?=:>?carry32:
+r = s - n:>r=int64:<s=int64:#n:asm/sub <s,#n,>r:
+r = (int32) s << n:>r=int64:<s=int64:#n:asm/sll <s,#n,>r:
+r = (int32) s >> n:>r=int64:<s=int64:#n:asm/sra <s,#n,>r:
+r = (int64) s << n:>r=int64:<s=int64:#n:asm/sllx <s,#n,>r:
+r = (int64) s >> n:>r=int64:<s=int64:#n:asm/srax <s,#n,>r:
+r = (uint32) s << n:>r=int64:<s=int64:#n:asm/sll <s,#n,>r:
+r = (uint32) s >> n:>r=int64:<s=int64:#n:asm/srl <s,#n,>r:
+r = (uint64) s << n:>r=int64:<s=int64:#n:asm/sllx <s,#n,>r:
+r = (uint64) s >> n:>r=int64:<s=int64:#n:asm/srlx <s,#n,>r:
+r = s << n:>r=int64:<s=int64:#n:asm/sllx <s,#n,>r:
+
+r = s + t:>r=int64:<s=int64:<t=int64:asm/add <s,<t,>r:
+r = s + t:>r=int64:<s=int64:<t=int64:asm/addcc <s,<t,>r:>?unsigned>:>?unsigned<:>?=:>?carry32:
+r = s + t + carry32:>r=int64:<s=int64:<t=int64:<?carry32:asm/addccc <s,<t,>r:>?unsigned>:>?unsigned<:>?=:>?carry32:
+r = s - t:>r=int64:<s=int64:<t=int64:asm/sub <s,<t,>r: 
+r = s - t:>r=int64:<s=int64:<t=int64:asm/subcc <s,<t,>r:>?unsigned>:>?unsigned<:>?=:>?carry32:
+r = s & t:>r=int64:<s=int64:<t=int64:asm/and <s,<t,>r: 
+r = s | t:>r=int64:<s=int64:<t=int64:asm/or  <s,<t,>r:
+r = s ^ t:>r=int64:<s=int64:<t=int64:asm/xor <s,<t,>r:
+
+r = s:>r=stack64:<s=float64:asm/std <s,[%fp+2023->r]:
+r = s:>r=float64:<s=stack64:asm/ldd [%fp+2023-<s],>r:
+round *(uint32 *) (s + n):<s=int64:#n:asm/ld [<s+#n],%fsr:
+r = *(float64 *) (s + n):>r=float64:<s=int64:#n:asm/ldd [<s+#n],>r:
+*(float64 *) (s + n) = r:<r=float64:<s=int64:#n:asm/std <r,[<s+#n]:
+
+r = s - t:>r=float64:<s=float64:<t=float64:asm/fsubd <s,<t,>r:
+r = s + t:>r=float64:<s=float64:<t=float64:asm/faddd <s,<t,>r:
+r = s * t:>r=float64:<s=float64:<t=float64:asm/fmuld <s,<t,>r:
+r -= t:>r=float64:<r=float64:<t=float64:asm/fsubd <r,<t,>r:
+r += t:>r=float64:<r=float64:<t=float64:asm/faddd <r,<t,>r:
+r *= t:>r=float64:<r=float64:<t=float64:asm/fmuld <r,<t,>r:
+
+f#:#f:label/f:asm/._#f!colon:
+goto f:#f:nofallthrough:jump/f:asm/b ._#f:asm/nop:
+goto f if =:#f:jump/f:<?=:asm/be,pt %xcc,._#f:asm/nop:
+goto f if !=:#f:jump/f:<?=:asm/bne,pt %xcc,._#f:asm/nop:
+goto f if unsigned>:#f:jump/f:<?unsigned>:asm/bgu,pt %xcc,._#f:asm/nop:
+goto f if !unsigned>:#f:jump/f:<?unsigned>:asm/bleu,pt %xcc,._#f:asm/nop:
+goto f if unsigned<:#f:jump/f:<?unsigned<:asm/blu,pt %xcc,._#f:asm/nop:
+goto f if !unsigned<:#f:jump/f:<?unsigned<:asm/bgeu,pt %xcc,._#f:asm/nop:
+:

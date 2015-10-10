@@ -1,0 +1,2 @@
+#!/bin/sh
+exec gcc -O3 -fomit-frame-pointer "$@"

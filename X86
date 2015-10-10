@@ -1,0 +1,225 @@
+:name:int32:%eax:%ecx:%edx:%ebx:%esi:%edi:%ebp:
+:caller:int32:1:4:5:6:7:
+:name:int3232:%mm0:%mm1:%mm2:%mm3:%mm4:%mm5:%mm6:%mm7:
+:name:int6464:%xmm0:%xmm1:%xmm2:%xmm3:%xmm4:%xmm5:%xmm6:%xmm7:
+:name:float80:%st(0):%st(1):%st(2):%st(3):%st(4):%st(5):%st(6):%st(7):
+:stackalign:32:
+:stackargusescaller:int32#1:
+:stackname::(%esp):
+:stackargname::(%esp,%eax):
+:stackbytes:stack32:4:
+:stackbytes:stack64:8:
+:stackbytes:stack128:16:
+:stackbytes:stack256:32:
+:stackbytes:stack512:64:
+:rightbytes:4:
+:leftbytes:0:
+:flag:=:
+:flag:unsigned<:
+:flag:unsigned>:
+:flag:carry:
+
+enter f:enter/f:asm/.text:asm/.p2align 5:asm/.globl _#f:asm/.globl #f:asm/_#f!colon:asm/#f!colon:asm/mov %esp,%eax:asm/and $31,%eax:asm/add $!frame,%eax:asm/sub %eax,%esp:
+enter f stackaligned4096 n:enter/f:#n:asm/.text:asm/.p2align 5:asm/.globl _#f:asm/.globl #f:asm/_#f!colon:asm/#f!colon:asm/mov %esp,%eax:asm/sub $#n,%eax:asm/and $4095,%eax:asm/add $!frame,%eax:asm/sub %eax,%esp:
+leave:nofallthrough:leave:asm/add %eax,%esp:asm/ret:
+int32 r:var/r=int32:
+int3232 r:var/r=int3232:
+int6464 r:var/r=int6464:
+float80 r:var/r=float80:
+stack32 r:var/r=stack32:
+stack64 r:var/r=stack64:
+stack128 r:var/r=stack128:
+stack256 r:var/r=stack256:
+stack512 r:var/r=stack512:
+input r:input/r:
+output r:output/r:
+caller r:caller/r:
+
+emms:asm/emms:
+
+r = n:>r=int32:#n:asm/mov  $#n,>r:
+r = -n:>r=int32:#n:asm/mov  $-#n,>r:
+r = s:>r=int32:<s=int32:asm/mov  <s,>r:
+r = s:>r=int32:<s=int3232:asm/movd <s,>r:
+r = s:>r=int3232:<s=int32:asm/movd <s,>r:
+r = s:>r=stack32:<s=int32:asm/movl <s,>r:
+r = s:>r=int32:<s=stack32:asm/movl <s,>r:
+r = *(uint8 *) (s + n):>r=int32:<s=int32:#n:asm/movzbl #n(<s),>r:
+r = *(uint16 *) (s + n):>r=int32:<s=int32:#n:asm/movzwl #n(<s),>r:
+r = *(uint32 *) (s + n):>r=int32:<s=int32:#n:asm/movl #n(<s),>r:
+*(uint8 *) (s + n) = r:<r=int32#1,2,3,4:<s=int32:#n:asm/movb <r%8,#n(<s):
+*(uint16 *) (s + n) = r:<r=int32#1,2,3,4:<s=int32:#n:asm/movw <r%16,#n(<s):
+*(uint32 *) (s + n) = r:<r=int32:<s=int32:#n:asm/movl <r,#n(<s):
+r = *(uint8 *) (&n + s):>r=int32:<s=int32:#n:asm/movzbl #n(<s),>r:
+r = *(uint16 *) (&n + s):>r=int32:<s=int32:#n:asm/movzwl #n(<s),>r:
+r = *(uint32 *) (&n + s):>r=int32:<s=int32:#n:asm/movl #n(<s),>r:
+*(uint8 *) (&n + s) = r:<r=int32#1,2,3,4:<s=int32:#n:asm/movb <r%8,#n(<s):
+*(uint16 *) (&n + s) = r:<r=int32#1,2,3,4:<s=int32:#n:asm/movw <r%16,#n(<s):
+*(uint32 *) (&n + s) = r:<r=int32:<s=int32:#n:asm/movl <r,#n(<s):
+r = *(uint8 *) (&n + s * 8):>r=int32:<s=int32:#n:asm/movzbl #n(,<s,8),>r:
+r = *(uint16 *) (&n + s * 8):>r=int32:<s=int32:#n:asm/movzwl #n(,<s,8),>r:
+r = *(uint32 *) (&n + s * 8):>r=int32:<s=int32:#n:asm/movl #n(,<s,8),>r:
+*(uint8 *) (&n + s * 8) = r:<r=int32#1,2,3,4:<s=int32:#n:asm/movb <r%8,#n(,<s,8):
+*(uint16 *) (&n + s * 8) = r:<r=int32#1,2,3,4:<s=int32:#n:asm/movw <r%16,#n(,<s,8):
+*(uint32 *) (&n + s * 8) = r:<r=int32:<s=int32:#n:asm/movl <r,#n(,<s,8):
+r = *(uint8 *) (s + t):>r=int32:<s=int32:<t=int32:asm/movzbl (<s,<t),>r:
+r = *(uint16 *) (s + t):>r=int32:<s=int32:<t=int32:asm/movzwl (<s,<t),>r:
+r = *(uint32 *) (s + t):>r=int32:<s=int32:<t=int32:asm/movl (<s,<t),>r:
+*(uint8 *) (s + t) = r:<r=int32#1,2,3,4:<s=int32:<t=int32:asm/movb <r%8,(<s,<t):
+*(uint16 *) (s + t) = r:<r=int32#1,2,3,4:<s=int32:<t=int32:asm/movw <r%16,(<s,<t):
+*(uint32 *) (s + t) = r:<r=int32:<s=int32:<t=int32:asm/movl <r,(<s,<t):
+
+*(uint8 *) (s + n) = m:<s=int32:#n:#m:asm/movb $#m,#n(<s):
+*(uint16 *) (s + n) = m:<s=int32:#n:#m:asm/movw $#m,#n(<s):
+*(uint32 *) (s + n) = m:<s=int32:#n:#m:asm/movl $#m,#n(<s):
+
+r top = n:>r=stack64:#n:asm/movl  $#n,!shift4>r:
+inplace r bottom = s:inplace>r=stack64:<r=stack64:<s=int32:asm/movl <s,<r:
+r = bottom s:>r=int32:<s=stack64:asm/movl <s,>r:
+r = top s:>r=int32:<s=stack64:asm/movl !shift4<s,>r:
+
+
+r = s & 255:>r=int32:<s=int32#1,2,3,4:asm/movzbl <s%8,>r:
+r = (s >> 8) & 255:>r=int32:<s=int32#1,2,3,4:asm/movzbl <s%next8,>r:
+
+while (n) { *y++ = x; --n }:<n=int32#2:<x=int32#1:<y=int32#6:asm/rep stosb:
+while (n) { *y++ = *x++; --n }:<n=int32#2:<x=int32#5:<y=int32#6:asm/rep movsb:
+
+assign 1 to r:<r=int32#1:
+assign 2 to r:<r=int32#2:
+assign 3 to r:<r=int32#3:
+assign 4 to r:<r=int32#4:
+assign 5 to r:<r=int32#5:
+assign 6 to r:<r=int32#6:
+assign 7 to r:<r=int32#7:
+
+
+r = &s:>r=int32:inplace>s=stack512:<s=stack512:asm/leal <s,>r:
+r = &s:>r=int32:inplace>s=stack128:<s=stack128:asm/leal <s,>r:
+
+round *(uint16 *) &n:#n:asm/fldcw #n:
+r = *(float64 *) &n:>r=float80:#n:fpstack/load:asm/fldl #n:
+r = *(float64 *) &s:>r=float80:<s=stack64:fpstack/load:asm/fldl <s:
+r = *(float64 *) (s + n):>r=float80:<s=int32:#n:fpstack/load:asm/fldl #n(<s):
+r += *(float64 *) &n:inplace>r=float80:<r=float80:#n:fpstack/loadarith:asm/faddl #n:
+r += *(float64 *) &s:inplace>r=float80:<r=float80:<s=stack64:fpstack/loadarith:asm/faddl <s:
+r += *(float64 *) (s + n):inplace>r=float80:<r=float80:<s=int32:#n:fpstack/loadarith:asm/faddl #n(<s):
+r -= *(float64 *) &n:inplace>r=float80:<r=float80:#n:fpstack/loadarith:asm/fsubl #n:
+r -= *(float64 *) &s:inplace>r=float80:<r=float80:<s=stack64:fpstack/loadarith:asm/fsubl <s:
+r -= *(float64 *) (s + n):inplace>r=float80:<r=float80:<s=int32:#n:fpstack/loadarith:asm/fsubl #n(<s):
+r *= *(float64 *) &n:inplace>r=float80:<r=float80:#n:fpstack/loadarith:asm/fmull #n:
+r *= *(float64 *) &s:inplace>r=float80:<r=float80:<s=stack64:fpstack/loadarith:asm/fmull <s:
+r *= *(float64 *) (s + n):inplace>r=float80:<r=float80:<s=int32:#n:fpstack/loadarith:asm/fmull #n(<s):
+r *= s:inplace>r=float80:<r=float80:<s=float80:fpstack/arith:asm/fmul <s,<r!nopop:asm/fmulp <s,<r!pop:
+r += s:inplace>r=float80:<r=float80:<s=float80:fpstack/arith:asm/fadd <s,<r!nopop:asm/faddp <s,<r!pop:
+r -= s:inplace>r=float80:<r=float80:<s=float80:fpstack/arith:asm/fsub <s,<r!nopop!noreverse:asm/fsubr <s,<r!nopop!reverse:asm/fsubp <s,<r!pop!noreverse:asm/fsubrp <s,<r!pop!reverse:
+r -= s;negate:inplace>r=float80:<r=float80:<s=float80:fpstack/arith:asm/fsubr <s,<r!nopop!noreverse:asm/fsub <s,<r!nopop!reverse:asm/fsubrp <s,<r!pop!noreverse:asm/fsubp <s,<r!pop!reverse:
+*(float64 *) (s + n) = r:<r=float80:<s=int32:#n:fpstack/store:asm/fstl #n(<s)!nopop:asm/fstpl #n(<s)!pop:
+*(float64 *) &s = r:<r=float80:>s=stack64:fpstack/store:asm/fstl >s!nopop:asm/fstpl >s!pop:
+stackpop r:<r=float80:fpstack/pop:asm/fstp %st(0):
+stacktop r:<r=float80:fpstack/top:asm/fxch <r:
+
+r = 0:>r=float80:fpstack/load:asm/fldz:
+r = *(int32 *) &n:>r=float80:#n:fpstack/load:asm/fildl #n:
+r = *(int32 *) &s:>r=float80:<s=stack32:fpstack/load:asm/fildl <s:
+r = *(int32 *) (s + n):>r=float80:<s=int32:#n:fpstack/load:asm/fildl #n(<s):
+
+r = s:>r=int32:<s=int6464:asm/movd   <s,>r:
+r = s:>r=int6464:<s=int32:asm/movd   <s,>r:
+r = s:>r=int6464:<s=stack128:asm/movdqa <s,>r:
+r = s:>r=stack128:<s=int6464:asm/movdqa <s,>r:
+r = 0:>r=int6464:asm/pxor   >r,>r:
+r <<<= 0:inplace>r=int6464:<r=int6464:asm/pshufd $0xe4,<r,<r:
+r <<<= 32:inplace>r=int6464:<r=int6464:asm/pshufd $0x93,<r,<r:
+r <<<= 64:inplace>r=int6464:<r=int6464:asm/pshufd $0x4e,<r,<r:
+r <<<= 96:inplace>r=int6464:<r=int6464:asm/pshufd $0x39,<r,<r:
+r = s <<< 0:>r=int6464:<s=int6464:asm/pshufd $0xe4,<s,>r:
+r = s <<< 32:>r=int6464:<s=int6464:asm/pshufd $0x93,<s,>r:
+r = s <<< 64:>r=int6464:<s=int6464:asm/pshufd $0x4e,<s,>r:
+r = s <<< 96:>r=int6464:<s=int6464:asm/pshufd $0x39,<s,>r:
+((uint32 *)&r)[0] = 0:>r=stack128:asm/movl $0,>r:
+((uint32 *)&r)[1] = 0:inplace>r=stack128:<r=stack128:asm/movl $0,4+<r:
+((uint32 *)&r)[2] = 0:inplace>r=stack128:<r=stack128:asm/movl $0,8+<r:
+((uint32 *)&r)[3] = 0:inplace>r=stack128:<r=stack128:asm/movl $0,12+<r:
+((uint32 *)&r)[0] = s:>r=stack128:<s=int32:asm/movl <s,>r:
+((uint32 *)&r)[1] = s:inplace>r=stack128:<r=stack128:<s=int32:asm/movl <s,4+<r:
+((uint32 *)&r)[2] = s:inplace>r=stack128:<r=stack128:<s=int32:asm/movl <s,8+<r:
+((uint32 *)&r)[3] = s:inplace>r=stack128:<r=stack128:<s=int32:asm/movl <s,12+<r:
+r = ((uint32 *)&s)[0]:>r=int32:<s=stack128:asm/movl <s,>r:
+r = ((uint32 *)&s)[1]:>r=int32:<s=stack128:asm/movl 4+<s,>r:
+r = ((uint32 *)&s)[2]:>r=int32:<s=stack128:asm/movl 8+<s,>r:
+r = ((uint32 *)&s)[3]:>r=int32:<s=stack128:asm/movl 12+<s,>r:
+
+int32323232 r <<= n:inplace>r=int6464:<r=int6464:#n:asm/pslld $#n,<r:
+uint32323232 r <<= n:inplace>r=int6464:<r=int6464:#n:asm/pslld $#n,<r:
+int32323232 r >>= n:inplace>r=int6464:<r=int6464:#n:asm/psrad $#n,<r:
+uint32323232 r >>= n:inplace>r=int6464:<r=int6464:#n:asm/psrld $#n,<r:
+int32323232 r += s:inplace>r=int6464:<r=int6464:<s=int6464:asm/paddd <s,<r:
+uint32323232 r += s:inplace>r=int6464:<r=int6464:<s=int6464:asm/paddd <s,<r:
+int32323232 r -= s:inplace>r=int6464:<r=int6464:<s=int6464:asm/psubd <s,<r:
+uint32323232 r -= s:inplace>r=int6464:<r=int6464:<s=int6464:asm/psubd <s,<r:
+int32323232 r += s:inplace>r=int6464:<r=int6464:<s=stack128:asm/paddd <s,<r:
+uint32323232 r += s:inplace>r=int6464:<r=int6464:<s=stack128:asm/paddd <s,<r:
+int32323232 r -= s:inplace>r=int6464:<r=int6464:<s=stack128:asm/psubd <s,<r:
+uint32323232 r -= s:inplace>r=int6464:<r=int6464:<s=stack128:asm/psubd <s,<r:
+r &= s:inplace>r=int6464:<r=int6464:<s=int6464:asm/pand  <s,<r:
+r ~&= s:inplace>r=int6464:<r=int6464:<s=int6464:asm/pandn <s,<r:
+r |= s:inplace>r=int6464:<r=int6464:<s=int6464:asm/por   <s,<r:
+r ^= s:inplace>r=int6464:<r=int6464:<s=int6464:asm/pxor  <s,<r:
+
+r = *(int128 *) (s + n):>r=int6464:<s=int32:#n:asm/movdqa #n(<s),>r:
+uint32323232 r += *(int128 *) (s + n):inplace>r=int6464:<r=int6464:<s=int32:#n:asm/paddd #n(<s),<r:
+
+r += n:inplace>r=int32:<r=int32:#n:asm/add  $#n,<r:>?=:>?unsigned>:>?unsigned<:>?carry:
+r += n + carry:inplace>r=int32:<r=int32:#n:asm/adc $#n,<r:>?=:>?unsigned>:>?unsigned<:>?carry:<?carry:
+r -= n:inplace>r=int32:<r=int32:#n:asm/sub  $#n,<r:>?=:>?unsigned>:>?unsigned<:
+r - n:<r=int32:#n:asm/cmp  $#n,<r:>?=:>?unsigned>:>?unsigned<:
+r &= n:inplace>r=int32:<r=int32:#n:asm/and  $#n,<r:>?=:>?unsigned>:>?unsigned<:
+r |= n:inplace>r=int32:<r=int32:#n:asm/or   $#n,<r:>?=:>?unsigned>:>?unsigned<:
+r ^= n:inplace>r=int32:<r=int32:#n:asm/xor  $#n,<r:>?=:>?unsigned>:>?unsigned<:
+r ^= -n:inplace>r=int32:<r=int32:#n:asm/xor  $-#n,<r:>?=:>?unsigned>:>?unsigned<:
+r <<<= n:inplace>r=int32:<r=int32:#n:asm/rol  $#n,<r:>?=:>?unsigned>:>?unsigned<:
+(uint32) r >>= n:inplace>r=int32:<r=int32:#n:asm/shr  $#n,<r:>?=:>?unsigned>:>?unsigned<:
+(int32) r >>= n:inplace>r=int32:<r=int32:#n:asm/sar  $#n,<r:>?=:>?unsigned>:>?unsigned<:
+r <<= n:inplace>r=int32:<r=int32:#n:asm/shl  $#n,<r:>?=:>?unsigned>:>?unsigned<:
+
+r = s + t:>r=int32:<s=int32:<t=int32:asm/lea  (<s,<t),>r:
+r = s + t + n:>r=int32:<s=int32:<t=int32:#n:asm/lea  #n(<s,<t),>r:
+r += t + n:>r=int32:<r=int32:<t=int32:#n:asm/lea  #n(<r,<t),>r:
+
+r += s:inplace>r=int32:<r=int32:<s=int32:asm/addl <s,<r:>?=:>?unsigned>:>?unsigned<:>?carry:
+r += s + carry:inplace>r=int32:<r=int32:<s=int32:asm/adcl <s,<r:>?=:>?unsigned>:>?unsigned<:>?carry:<?carry:
+r -= s:inplace>r=int32:<r=int32:<s=int32:asm/subl <s,<r:>?=:>?unsigned>:>?unsigned<:
+r &= s:inplace>r=int32:<r=int32:<s=int32:asm/andl <s,<r:>?=:>?unsigned>:>?unsigned<:
+r |= s:inplace>r=int32:<r=int32:<s=int32:asm/orl  <s,<r:>?=:>?unsigned>:>?unsigned<:
+r ^= s:inplace>r=int32:<r=int32:<s=int32:asm/xorl <s,<r:>?=:>?unsigned>:>?unsigned<:
+r - s:<r=int32:<s=int32:asm/cmp  <s,<r:>?=:>?unsigned>:>?unsigned<:
+(uint32) r >>= s:inplace>r=int32:<r=int32:<s=int32#2:asm/shr  %cl,<r:>?=:>?unsigned>:>?unsigned<:
+(int32) r >>= s:inplace>r=int32:<r=int32:<s=int32#2:asm/sar  %cl,<r:>?=:>?unsigned>:>?unsigned<:
+r <<= s:inplace>r=int32:<r=int32:<s=int32#2:asm/shl  %cl,<r:>?=:>?unsigned>:>?unsigned<:
+
+r += s:inplace>r=int32:<r=int32:<s=stack32:asm/addl <s,<r:>?=:>?unsigned>:>?unsigned<:>?carry:
+r += s + carry:inplace>r=int32:<r=int32:<s=stack32:asm/adcl <s,<r:>?=:>?unsigned>:>?unsigned<:>?carry:<?carry:
+r -= s:inplace>r=int32:<r=int32:<s=stack32:asm/subl <s,<r:>?=:>?unsigned>:>?unsigned<:
+r &= s:inplace>r=int32:<r=int32:<s=stack32:asm/andl <s,<r:>?=:>?unsigned>:>?unsigned<:
+r |= s:inplace>r=int32:<r=int32:<s=stack32:asm/orl  <s,<r:>?=:>?unsigned>:>?unsigned<:
+r ^= s:inplace>r=int32:<r=int32:<s=stack32:asm/xorl <s,<r:>?=:>?unsigned>:>?unsigned<:
+
+r += *(uint32 *) (s + n):inplace>r=int32:<r=int32:<s=int32:#n:asm/addl #n(<s),<r:>?=:>?unsigned>:>?unsigned<:>?carry:
+r += *(uint32 *) (s + n) + carry:inplace>r=int32:<r=int32:<s=int32:#n:asm/adcl #n(<s),<r:>?=:>?unsigned>:>?unsigned<:>?carry:<?carry:
+r -= *(uint32 *) (s + n):inplace>r=int32:<r=int32:<s=int32:#n:asm/subl #n(<s),<r:>?=:>?unsigned>:>?unsigned<:
+r &= *(uint32 *) (s + n):inplace>r=int32:<r=int32:<s=int32:#n:asm/andl #n(<s),<r:>?=:>?unsigned>:>?unsigned<:
+r |= *(uint32 *) (s + n):inplace>r=int32:<r=int32:<s=int32:#n:asm/orl #n(<s),<r:>?=:>?unsigned>:>?unsigned<:
+r ^= *(uint32 *) (s + n):inplace>r=int32:<r=int32:<s=int32:#n:asm/xorl #n(<s),<r:>?=:>?unsigned>:>?unsigned<:
+r ^= *(uint32 *) (&n + s):inplace>r=int32:<r=int32:<s=int32:#n:asm/xorl #n(<s),<r:>?=:>?unsigned>:>?unsigned<:
+r ^= *(uint32 *) (&n + s * 8):inplace>r=int32:<r=int32:<s=int32:#n:asm/xorl #n(,<s,8),<r:>?=:>?unsigned>:>?unsigned<:
+
+f#:#f:label/f:asm/._#f!colon:
+goto f:#f:nofallthrough:jump/f:asm/jmp ._#f:
+goto f if =:#f:jump/f:<?=:asm/je ._#f:
+goto f if !=:#f:jump/f:<?=:asm/jne ._#f:
+goto f if unsigned>:#f:jump/f:<?unsigned>:asm/ja ._#f:
+goto f if !unsigned>:#f:jump/f:<?unsigned>:asm/jbe ._#f:
+goto f if unsigned<:#f:jump/f:<?unsigned<:asm/jb ._#f:
+goto f if !unsigned<:#f:jump/f:<?unsigned<:asm/jae ._#f:
+:

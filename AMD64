@@ -1,0 +1,346 @@
+nop:asm/nop:
+
+
+:flag:=:
+:flag:unsigned<:
+:flag:unsigned>:
+:flag:carry:
+
+f#:#f:label/f:asm/._#f!colon:
+goto f:#f:nofallthrough:jump/f:asm/jmp ._#f:
+goto f if =:#f:jump/f:<?=:asm/je ._#f:
+goto f if !=:#f:jump/f:<?=:asm/jne ._#f:
+goto f if unsigned>:#f:jump/f:<?unsigned>:asm/ja ._#f:
+goto f if !unsigned>:#f:jump/f:<?unsigned>:asm/jbe ._#f:
+goto f if unsigned<:#f:jump/f:<?unsigned<:asm/jb ._#f:
+goto f if !unsigned<:#f:jump/f:<?unsigned<:asm/jae ._#f:
+
+:name:int64:%rdi:%rsi:%rdx:%rcx:%r8:%r9:%rax:%r10:%r11:%r12:%r13:%r14:%r15:%rbx:%rbp:
+:caller:int64:9:10:11:12:13:14:15:
+int64 r:var/r=int64:
+
+assign 1 to r:<r=int64#1:
+assign 2 to r:<r=int64#2:
+assign 3 to r:<r=int64#3:
+assign 4 to r:<r=int64#4:
+assign 5 to r:<r=int64#5:
+assign 6 to r:<r=int64#6:
+assign 7 to r:<r=int64#7:
+assign 8 to r:<r=int64#8:
+assign 9 to r:<r=int64#9:
+assign 10 to r:<r=int64#10:
+assign 11 to r:<r=int64#11:
+assign 12 to r:<r=int64#12:
+assign 13 to r:<r=int64#13:
+assign 14 to r:<r=int64#14:
+assign 15 to r:<r=int64#15:
+
+r = n:>r=int64:#n:asm/mov  $#n,>r:
+r = -n:>r=int64:#n:asm/mov  $-#n,>r:
+r = s:>r=int64:<s=int64:asm/mov  <s,>r:
+r = &n:>r=int64:#n:asm/lea  #n(%rip),>r:
+
+r = ~r:inplace>r=int64:<r=int64:asm/not  <r:
+r = -r:inplace>r=int64:<r=int64:asm/neg  <r:>?=:>?unsigned>:>?unsigned<:
+
+r += n:inplace>r=int64:<r=int64:#n:asm/add  $#n,<r:>?=:>?unsigned>:>?unsigned<:>?carry:
+r += n + carry:inplace>r=int64:<r=int64:#n:asm/adc $#n,<r:>?=:>?unsigned>:>?unsigned<:>?carry:<?carry:
+r -= n:inplace>r=int64:<r=int64:#n:asm/sub  $#n,<r:>?=:>?unsigned>:>?unsigned<:
+r - n:<r=int64:#n:asm/cmp  $#n,<r:>?=:>?unsigned>:>?unsigned<:
+r += s:inplace>r=int64:<r=int64:<s=int64:asm/add  <s,<r:>?=:>?unsigned>:>?unsigned<:>?carry:
+r += s + carry:inplace>r=int64:<r=int64:<s=int64:asm/adc <s,<r:>?=:>?unsigned>:>?unsigned<:>?carry:<?carry:
+r -= s:inplace>r=int64:<r=int64:<s=int64:asm/sub  <s,<r:>?=:>?unsigned>:>?unsigned<:
+r - s:<r=int64:<s=int64:asm/cmp  <s,<r:>?=:>?unsigned>:>?unsigned<:
+r = s + t:>r=int64:<s=int64:<t=int64:asm/lea  (<s,<t),>r:
+r = s + t + n:>r=int64:<s=int64:<t=int64:#n:asm/lea  #n(<s,<t),>r:
+r += t + n:>r=int64:<r=int64:<t=int64:#n:asm/lea  #n(<r,<t),>r:
+
+(uint32) r += s:inplace>r=int64:<r=int64:<s=int64:asm/add <s%32,<r%32:>?=:>?unsigned>:>?unsigned<:>?carry:
+(uint32) r += s + carry:inplace>r=int64:<r=int64:<s=int64:asm/adc <s%32,<r%32:>?=:>?unsigned>:>?unsigned<:>?carry:<?carry:
+(uint32) r -= s:inplace>r=int64:<r=int64:<s=int64:asm/sub  <s%32,<r%32:>?=:>?unsigned>:>?unsigned<:
+
+(uint32) r &= n:inplace>r=int64:<r=int64:#n:asm/and  $#n,<r%32:>?=:>?unsigned>:>?unsigned<:
+(uint32) r |= n:inplace>r=int64:<r=int64:#n:asm/or   $#n,<r%32:>?=:>?unsigned>:>?unsigned<:
+(uint32) r ^= n:inplace>r=int64:<r=int64:#n:asm/xor  $#n,<r%32:>?=:>?unsigned>:>?unsigned<:
+(uint32) r ^= -n:inplace>r=int64:<r=int64:#n:asm/xor  $-#n,<r%32:>?=:>?unsigned>:>?unsigned<:
+r <<<= n:inplace>r=int64:<r=int64:#n:asm/rol  $#n,<r:>?=:>?unsigned>:>?unsigned<:
+r >>>= n:inplace>r=int64:<r=int64:#n:asm/ror  $#n,<r:>?=:>?unsigned>:>?unsigned<:
+r <<= n:inplace>r=int64:<r=int64:#n:asm/shl  $#n,<r:>?=:>?unsigned>:>?unsigned<:
+(int64)  r >>= n:inplace>r=int64:<r=int64:#n:asm/sar  $#n,<r:>?=:>?unsigned>:>?unsigned<:
+(uint64) r >>= n:inplace>r=int64:<r=int64:#n:asm/shr  $#n,<r:>?=:>?unsigned>:>?unsigned<:
+
+(uint32) r <<<= n:inplace>r=int64:<r=int64:#n:asm/rol  $#n,<r%32:>?=:>?unsigned>:>?unsigned<:
+(uint32) r >>>= n:inplace>r=int64:<r=int64:#n:asm/ror  $#n,<r%32:>?=:>?unsigned>:>?unsigned<:
+(uint32) r <<= n:inplace>r=int64:<r=int64:#n:asm/shl  $#n,<r%32:>?=:>?unsigned>:>?unsigned<:
+(uint32) r >>= n:inplace>r=int64:<r=int64:#n:asm/shr  $#n,<r%32:>?=:>?unsigned>:>?unsigned<:
+(int32)  r >>= n:inplace>r=int64:<r=int64:#n:asm/sar  $#n,<r%32:>?=:>?unsigned>:>?unsigned<:
+
+r &= s:inplace>r=int64:<r=int64:<s=int64:asm/and  <s,<r:>?=:>?unsigned>:>?unsigned<:
+r |= s:inplace>r=int64:<r=int64:<s=int64:asm/or   <s,<r:>?=:>?unsigned>:>?unsigned<:
+r ^= s:inplace>r=int64:<r=int64:<s=int64:asm/xor  <s,<r:>?=:>?unsigned>:>?unsigned<:
+r <<= s:inplace>r=int64:<r=int64:<s=int64#4:asm/shl  %cl,<r:>?=:>?unsigned>:>?unsigned<:
+r <<<= s:inplace>r=int64:<r=int64:<s=int64#4:asm/rol  %cl,<r:>?=:>?unsigned>:>?unsigned<:
+r >>>= s:inplace>r=int64:<r=int64:<s=int64#4:asm/ror  %cl,<r:>?=:>?unsigned>:>?unsigned<:
+(int64)  r >>= s:inplace>r=int64:<r=int64:<s=int64#4:asm/sar  %cl,<r:>?=:>?unsigned>:>?unsigned<:
+(uint64) r >>= s:inplace>r=int64:<r=int64:<s=int64#4:asm/shr  %cl,<r:>?=:>?unsigned>:>?unsigned<:
+
+r = s & 255:>r=int64:<s=int64:asm/movzbl  <s%8,>r%32:
+r = (s >> 8) & 255:>r=int64#1,2,3,4,7,14,15:<s=int64#3,4,7,14:asm/movzbl  <s%next8,>r%32:
+assign 1 to r = (s >> 8) & 255:>r=int64#1:<s=int64#3,4,7,14:asm/movzbl  <s%next8,>r%32:
+assign 2 to r = (s >> 8) & 255:>r=int64#2:<s=int64#3,4,7,14:asm/movzbl  <s%next8,>r%32:
+assign 15 to r = (s >> 8) & 255:>r=int64#15:<s=int64#3,4,7,14:asm/movzbl  <s%next8,>r%32:
+
+r = (r.t) << n:inplace>r=int64:<r=int64:#n:<t=int64:asm/shld $#n,<t,<r:>?=:>?unsigned>:>?unsigned<:
+r = (t r) >> n:inplace>r=int64:<r=int64:#n:<t=int64:asm/shrd $#n,<t,<r:>?=:>?unsigned>:>?unsigned<:
+r = (r.t) << s:inplace>r=int64:<r=int64:<s=int64#4:<t=int64:asm/shld %cl,<t,<r:>?=:>?unsigned>:>?unsigned<:
+r = (t r) >> s:inplace>r=int64:<r=int64:<s=int64#4:<t=int64:asm/shrd %cl,<t,<r:>?=:>?unsigned>:>?unsigned<:
+
+r = s * n:>r=int64:<s=int64:#n:asm/imul  <s,#n,>r:>?=:>?unsigned>:>?unsigned<:
+r *= s:inplace>r=int64:<r=int64:<s=int64:asm/imul  <s,<r:>?=:>?unsigned>:>?unsigned<:
+(int128)  t r = r * s:>t=int64#3:inplace>r=int64#7:<r=int64#7:<s=int64:asm/imul <s:>?=:>?unsigned>:>?unsigned<:
+(uint128) t r = r * s:>t=int64#3:inplace>r=int64#7:<r=int64#7:<s=int64:asm/mul  <s:>?=:>?unsigned>:>?unsigned<:
+
+
+r = *(uint8  *) (s + n):>r=int64:<s=int64:#n:asm/movzbq #n(<s),>r:
+r = *(uint16 *) (s + n):>r=int64:<s=int64:#n:asm/movzwq #n(<s),>r:
+r = *(uint32 *) (s + n):>r=int64:<s=int64:#n:asm/movl   #n(<s),>r%32:
+r = *(uint64 *) (s + n):>r=int64:<s=int64:#n:asm/movq   #n(<s),>r:
+r = *( int8  *) (s + n):>r=int64:<s=int64:#n:asm/movsbq #n(<s),>r:
+r = *( int16 *) (s + n):>r=int64:<s=int64:#n:asm/movswq #n(<s),>r:
+r = *( int32 *) (s + n):>r=int64:<s=int64:#n:asm/movslq #n(<s),>r:
+r = *( int64 *) (s + n):>r=int64:<s=int64:#n:asm/movq   #n(<s),>r:
+
+r = *(uint8  *) (s + t):>r=int64:<s=int64:<t=int64:asm/movzbq (<s,<t),>r:
+r = *(uint16 *) (s + t):>r=int64:<s=int64:<t=int64:asm/movzwq (<s,<t),>r:
+r = *(uint32 *) (s + t):>r=int64:<s=int64:<t=int64:asm/movl   (<s,<t),>r%32:
+r = *(uint64 *) (s + t):>r=int64:<s=int64:<t=int64:asm/movq   (<s,<t),>r:
+r = *( int8  *) (s + t):>r=int64:<s=int64:<t=int64:asm/movsbq (<s,<t),>r:
+r = *( int16 *) (s + t):>r=int64:<s=int64:<t=int64:asm/movswq (<s,<t),>r:
+r = *( int32 *) (s + t):>r=int64:<s=int64:<t=int64:asm/movslq (<s,<t),>r:
+r = *( int64 *) (s + t):>r=int64:<s=int64:<t=int64:asm/movq   (<s,<t),>r:
+
+r = *(uint8  *) (s + t * 8):>r=int64:<s=int64:<t=int64:asm/movzbq (<s,<t,8),>r:
+r = *(uint16 *) (s + t * 8):>r=int64:<s=int64:<t=int64:asm/movzwq (<s,<t,8),>r:
+r = *(uint32 *) (s + t * 8):>r=int64:<s=int64:<t=int64:asm/movl   (<s,<t,8),>r%32:
+r = *(uint64 *) (s + t * 8):>r=int64:<s=int64:<t=int64:asm/movq   (<s,<t,8),>r:
+r = *( int8  *) (s + t * 8):>r=int64:<s=int64:<t=int64:asm/movsbq (<s,<t,8),>r:
+r = *( int16 *) (s + t * 8):>r=int64:<s=int64:<t=int64:asm/movswq (<s,<t,8),>r:
+r = *( int32 *) (s + t * 8):>r=int64:<s=int64:<t=int64:asm/movslq (<s,<t,8),>r:
+r = *( int64 *) (s + t * 8):>r=int64:<s=int64:<t=int64:asm/movq   (<s,<t,8),>r:
+
+r = *(uint8  *) (s + n + t * 8):>r=int64:<s=int64:<t=int64:#n:asm/movzbq #n(<s,<t,8),>r:
+r = *(uint16 *) (s + n + t * 8):>r=int64:<s=int64:<t=int64:#n:asm/movzwq #n(<s,<t,8),>r:
+r = *(uint32 *) (s + n + t * 8):>r=int64:<s=int64:<t=int64:#n:asm/movl   #n(<s,<t,8),>r%32:
+r = *(uint64 *) (s + n + t * 8):>r=int64:<s=int64:<t=int64:#n:asm/movq   #n(<s,<t,8),>r:
+r = *( int8  *) (s + n + t * 8):>r=int64:<s=int64:<t=int64:#n:asm/movsbq #n(<s,<t,8),>r:
+r = *( int16 *) (s + n + t * 8):>r=int64:<s=int64:<t=int64:#n:asm/movswq #n(<s,<t,8),>r:
+r = *( int32 *) (s + n + t * 8):>r=int64:<s=int64:<t=int64:#n:asm/movslq #n(<s,<t,8),>r:
+r = *( int64 *) (s + n + t * 8):>r=int64:<s=int64:<t=int64:#n:asm/movq   #n(<s,<t,8),>r:
+
+(uint32) r += *(uint32 *) (s + n):inplace>r=int64:<r=int64:<s=int64:#n:asm/addl #n(<s),<r%32:>?=:>?unsigned>:>?unsigned<:>?carry:
+(uint32) r += *(uint32 *) (s + n) + carry:inplace>r=int64:<r=int64:<s=int64:#n:asm/adcl #n(<s),<r%32:>?=:>?unsigned>:>?unsigned<:>?carry:<?carry:
+(uint32) r -= *(uint32 *) (s + n):inplace>r=int64:<r=int64:<s=int64:#n:asm/subl #n(<s),<r%32:>?=:>?unsigned>:>?unsigned<:
+(uint32) r &= *(uint32 *) (s + n):inplace>r=int64:<r=int64:<s=int64:#n:asm/andl #n(<s),<r%32:>?=:>?unsigned>:>?unsigned<:
+(uint32) r |= *(uint32 *) (s + n):inplace>r=int64:<r=int64:<s=int64:#n:asm/orl  #n(<s),<r%32:>?=:>?unsigned>:>?unsigned<:
+(uint32) r ^= *(uint32 *) (s + n):inplace>r=int64:<r=int64:<s=int64:#n:asm/xorl #n(<s),<r%32:>?=:>?unsigned>:>?unsigned<:
+
+(uint32) r += *(uint32 *) (s + n + t * 8):inplace>r=int64:<r=int64:<s=int64:<t=int64:#n:asm/addl #n(<s,<t,8),<r%32:>?=:>?unsigned>:>?unsigned<:
+(uint32) r -= *(uint32 *) (s + n + t * 8):inplace>r=int64:<r=int64:<s=int64:<t=int64:#n:asm/subl #n(<s,<t,8),<r%32:>?=:>?unsigned>:>?unsigned<:
+(uint32) r &= *(uint32 *) (s + n + t * 8):inplace>r=int64:<r=int64:<s=int64:<t=int64:#n:asm/andl #n(<s,<t,8),<r%32:>?=:>?unsigned>:>?unsigned<:
+(uint32) r |= *(uint32 *) (s + n + t * 8):inplace>r=int64:<r=int64:<s=int64:<t=int64:#n:asm/orl #n(<s,<t,8),<r%32:>?=:>?unsigned>:>?unsigned<:
+(uint32) r ^= *(uint32 *) (s + n + t * 8):inplace>r=int64:<r=int64:<s=int64:<t=int64:#n:asm/xorl #n(<s,<t,8),<r%32:>?=:>?unsigned>:>?unsigned<:
+
+(uint32) r += *(uint32 *) (s + t * 8):inplace>r=int64:<r=int64:<s=int64:<t=int64:asm/addl (<s,<t,8),<r%32:>?=:>?unsigned>:>?unsigned<:
+(uint32) r -= *(uint32 *) (s + t * 8):inplace>r=int64:<r=int64:<s=int64:<t=int64:asm/subl (<s,<t,8),<r%32:>?=:>?unsigned>:>?unsigned<:
+(uint32) r &= *(uint32 *) (s + t * 8):inplace>r=int64:<r=int64:<s=int64:<t=int64:asm/andl (<s,<t,8),<r%32:>?=:>?unsigned>:>?unsigned<:
+(uint32) r |= *(uint32 *) (s + t * 8):inplace>r=int64:<r=int64:<s=int64:<t=int64:asm/orl (<s,<t,8),<r%32:>?=:>?unsigned>:>?unsigned<:
+(uint32) r ^= *(uint32 *) (s + t * 8):inplace>r=int64:<r=int64:<s=int64:<t=int64:asm/xorl (<s,<t,8),<r%32:>?=:>?unsigned>:>?unsigned<:
+
+r += *(uint64 *) (s + n):inplace>r=int64:<r=int64:<s=int64:#n:asm/addq #n(<s),<r:>?=:>?unsigned>:>?unsigned<:>?carry:
+r += *(uint64 *) (s + n) + carry:inplace>r=int64:<r=int64:<s=int64:#n:asm/adcq #n(<s),<r:>?=:>?unsigned>:>?unsigned<:>?carry:<?carry:
+r -= *(uint64 *) (s + n):inplace>r=int64:<r=int64:<s=int64:#n:asm/subq #n(<s),<r:>?=:>?unsigned>:>?unsigned<:
+r &= *(uint64 *) (s + n):inplace>r=int64:<r=int64:<s=int64:#n:asm/andq #n(<s),<r:>?=:>?unsigned>:>?unsigned<:
+r |= *(uint64 *) (s + n):inplace>r=int64:<r=int64:<s=int64:#n:asm/orq  #n(<s),<r:>?=:>?unsigned>:>?unsigned<:
+r ^= *(uint64 *) (s + n):inplace>r=int64:<r=int64:<s=int64:#n:asm/xorq #n(<s),<r:>?=:>?unsigned>:>?unsigned<:
+
+*(uint8  *) (s + n) = r:<r=int64:<s=int64:#n:asm/movb   <r%8,#n(<s):
+*(uint16 *) (s + n) = r:<r=int64:<s=int64:#n:asm/movw   <r%16,#n(<s):
+*(uint32 *) (s + n) = r:<r=int64:<s=int64:#n:asm/movl   <r%32,#n(<s):
+*(uint64 *) (s + n) = r:<r=int64:<s=int64:#n:asm/movq   <r,#n(<s):
+*( int8  *) (s + n) = r:<r=int64:<s=int64:#n:asm/movb   <r%8,#n(<s):
+*( int16 *) (s + n) = r:<r=int64:<s=int64:#n:asm/movw   <r%16,#n(<s):
+*( int32 *) (s + n) = r:<r=int64:<s=int64:#n:asm/movl   <r%32,#n(<s):
+*( int64 *) (s + n) = r:<r=int64:<s=int64:#n:asm/movq   <r,#n(<s):
+
+*(uint8  *) (s + n) = m:#m:<s=int64:#n:asm/movb   $#m,#n(<s):
+*(uint16 *) (s + n) = m:#m:<s=int64:#n:asm/movw   $#m,#n(<s):
+*(uint32 *) (s + n) = m:#m:<s=int64:#n:asm/movl   $#m,#n(<s):
+*(uint64 *) (s + n) = m:#m:<s=int64:#n:asm/movq   $#m,#n(<s):
+*( int8  *) (s + n) = m:#m:<s=int64:#n:asm/movb   $#m,#n(<s):
+*( int16 *) (s + n) = m:#m:<s=int64:#n:asm/movw   $#m,#n(<s):
+*( int32 *) (s + n) = m:#m:<s=int64:#n:asm/movl   $#m,#n(<s):
+*( int64 *) (s + n) = m:#m:<s=int64:#n:asm/movq   $#m,#n(<s):
+
+*(uint8  *) (s + t) = r:<r=int64:<s=int64:<t=int64:asm/movb   <r%8,(<s,<t):
+*(uint16 *) (s + t) = r:<r=int64:<s=int64:<t=int64:asm/movw   <r%16,(<s,<t):
+*(uint32 *) (s + t) = r:<r=int64:<s=int64:<t=int64:asm/movl   <r%32,(<s,<t):
+*(uint64 *) (s + t) = r:<r=int64:<s=int64:<t=int64:asm/movq   <r,(<s,<t):
+*( int8  *) (s + t) = r:<r=int64:<s=int64:<t=int64:asm/movb   <r%8,(<s,<t):
+*( int16 *) (s + t) = r:<r=int64:<s=int64:<t=int64:asm/movw   <r%16,(<s,<t):
+*( int32 *) (s + t) = r:<r=int64:<s=int64:<t=int64:asm/movl   <r%32,(<s,<t):
+*( int64 *) (s + t) = r:<r=int64:<s=int64:<t=int64:asm/movq   <r,(<s,<t):
+
+while (n) { *y++ = x; --n }:<n=int64#4:<x=int64#7:<y=int64#1:asm/rep stosb:
+while (n) { *y++ = *x++; --n }:<n=int64#4:<x=int64#2:<y=int64#1:asm/rep movsb:
+
+
+
+:name:int3232:%mmx0:%mmx1:%mmx2:%mmx3:%mmx4:%mmx5:%mmx6:%mmx7:
+int3232 r:var/r=int3232:
+
+emms:asm/emms:
+r = s:>r=int64:<s=int3232:asm/movd <s,>r:
+r = s:>r=int3232:<s=int64:asm/movd <s,>r:
+
+
+:name:int6464:%xmm0:%xmm1:%xmm2:%xmm3:%xmm4:%xmm5:%xmm6:%xmm7:%xmm8:%xmm9:%xmm10:%xmm11:%xmm12:%xmm13:%xmm14:%xmm15:
+int6464 r:var/r=int6464:
+
+r = 0:>r=int6464:asm/pxor   >r,>r:
+r = s:>r=int64:<s=int6464:asm/movd   <s,>r:
+r = s:>r=int6464:<s=int64:asm/movd   <s,>r:
+
+r &= s:inplace>r=int6464:<r=int6464:<s=int6464:asm/pand  <s,<r:
+r ~&= s:inplace>r=int6464:<r=int6464:<s=int6464:asm/pandn <s,<r:
+r |= s:inplace>r=int6464:<r=int6464:<s=int6464:asm/por   <s,<r:
+r ^= s:inplace>r=int6464:<r=int6464:<s=int6464:asm/pxor  <s,<r:
+
+r <<<= 0:inplace>r=int6464:<r=int6464:asm/pshufd $0xe4,<r,<r:
+r <<<= 32:inplace>r=int6464:<r=int6464:asm/pshufd $0x93,<r,<r:
+r <<<= 64:inplace>r=int6464:<r=int6464:asm/pshufd $0x4e,<r,<r:
+r <<<= 96:inplace>r=int6464:<r=int6464:asm/pshufd $0x39,<r,<r:
+r = s <<< 0:>r=int6464:<s=int6464:asm/pshufd $0xe4,<s,>r:
+r = s <<< 32:>r=int6464:<s=int6464:asm/pshufd $0x93,<s,>r:
+r = s <<< 64:>r=int6464:<s=int6464:asm/pshufd $0x4e,<s,>r:
+r = s <<< 96:>r=int6464:<s=int6464:asm/pshufd $0x39,<s,>r:
+
+int32323232 r <<= n:inplace>r=int6464:<r=int6464:#n:asm/pslld $#n,<r:
+uint32323232 r <<= n:inplace>r=int6464:<r=int6464:#n:asm/pslld $#n,<r:
+int32323232 r >>= n:inplace>r=int6464:<r=int6464:#n:asm/psrad $#n,<r:
+uint32323232 r >>= n:inplace>r=int6464:<r=int6464:#n:asm/psrld $#n,<r:
+int32323232 r += s:inplace>r=int6464:<r=int6464:<s=int6464:asm/paddd <s,<r:
+uint32323232 r += s:inplace>r=int6464:<r=int6464:<s=int6464:asm/paddd <s,<r:
+int32323232 r -= s:inplace>r=int6464:<r=int6464:<s=int6464:asm/psubd <s,<r:
+uint32323232 r -= s:inplace>r=int6464:<r=int6464:<s=int6464:asm/psubd <s,<r:
+
+
+:name:float80:%st(0):%st(1):%st(2):%st(3):%st(4):%st(5):%st(6):%st(7):
+float80 r:var/r=float80:
+
+r = 0:>r=float80:fpstack/load:asm/fldz:
+stackpop r:<r=float80:fpstack/pop:asm/fstp %st(0):
+stacktop r:<r=float80:fpstack/top:asm/fxch <r:
+
+r *= s:inplace>r=float80:<r=float80:<s=float80:fpstack/arith:asm/fmul <s,<r!nopop:asm/fmulp <s,<r!pop:
+r += s:inplace>r=float80:<r=float80:<s=float80:fpstack/arith:asm/fadd <s,<r!nopop:asm/faddp <s,<r!pop:
+r -= s:inplace>r=float80:<r=float80:<s=float80:fpstack/arith:asm/fsub <s,<r!nopop!noreverse:asm/fsubr <s,<r!nopop!reverse:asm/fsubp <s,<r!pop!noreverse:asm/fsubrp <s,<r!pop!reverse:
+r -= s;negate:inplace>r=float80:<r=float80:<s=float80:fpstack/arith:asm/fsubr <s,<r!nopop!noreverse:asm/fsub <s,<r!nopop!reverse:asm/fsubrp <s,<r!pop!noreverse:asm/fsubp <s,<r!pop!reverse:
+
+round *(uint16 *) &n:#n:asm/fldcw #n(%rip):
+
+r = *(float64 *) &n:>r=float80:#n:fpstack/load:asm/fldl #n(%rip):
+r = *(float64 *) (s + n):>r=float80:<s=int64:#n:fpstack/load:asm/fldl #n(<s):
+
+r = *(int32 *) &n:>r=float80:#n:fpstack/load:asm/fildl #n(%rip):
+r = *(int32 *) (s + n):>r=float80:<s=int64:#n:fpstack/load:asm/fildl #n(<s):
+
+r += *(float64 *) &n:inplace>r=float80:<r=float80:#n:fpstack/loadarith:asm/faddl #n(%rip):
+r += *(float64 *) (s + n):inplace>r=float80:<r=float80:<s=int64:#n:fpstack/loadarith:asm/faddl #n(<s):
+r -= *(float64 *) &n:inplace>r=float80:<r=float80:#n:fpstack/loadarith:asm/fsubl #n(%rip):
+r -= *(float64 *) (s + n):inplace>r=float80:<r=float80:<s=int64:#n:fpstack/loadarith:asm/fsubl #n(<s):
+r *= *(float64 *) &n:inplace>r=float80:<r=float80:#n:fpstack/loadarith:asm/fmull #n(%rip):
+r *= *(float64 *) (s + n):inplace>r=float80:<r=float80:<s=int64:#n:fpstack/loadarith:asm/fmull #n(<s):
+
+*(float64 *) (s + n) = r:<r=float80:<s=int64:#n:fpstack/store:asm/fstl #n(<s)!nopop:asm/fstpl #n(<s)!pop:
+
+
+:stackalign:32:
+:stackname::(%rsp):
+
+
+:stackbytes:stack32:4:
+stack32 r:var/r=stack32:
+
+
+:stackbytes:stack64:8:
+stack64 r:var/r=stack64:
+
+r = s:>r=stack64:<s=int64:asm/movq <s,>r:
+r = s:>r=int64:<s=stack64:asm/movq <s,>r:
+
+r top = n:>r=stack64:#n:asm/movl  $#n,!shift4>r:
+inplace r bottom = s:inplace>r=stack64:<r=stack64:<s=int64:asm/movl <s%32,<r:
+r = bottom s:>r=int64:<s=stack64:asm/movl <s,>r%32:
+r = top s:>r=int64:<s=stack64:asm/movl !shift4<s,>r%32:
+
+r += s:inplace>r=int64:<r=int64:<s=stack64:asm/addq <s,<r:>?=:>?unsigned>:>?unsigned<:
+r += s + carry:inplace>r=int64:<r=int64:<s=stack64:asm/adcq <s,<r:>?=:>?unsigned>:>?unsigned<:
+r -= s:inplace>r=int64:<r=int64:<s=stack64:asm/subq <s,<r:>?=:>?unsigned>:>?unsigned<:
+r &= s:inplace>r=int64:<r=int64:<s=stack64:asm/andq <s,<r:>?=:>?unsigned>:>?unsigned<:
+r |= s:inplace>r=int64:<r=int64:<s=stack64:asm/orq  <s,<r:>?=:>?unsigned>:>?unsigned<:
+r ^= s:inplace>r=int64:<r=int64:<s=stack64:asm/xorq <s,<r:>?=:>?unsigned>:>?unsigned<:
+
+(uint32) r += s:inplace>r=int64:<r=int64:<s=stack64:asm/addl <s,<r%32:>?=:>?unsigned>:>?unsigned<:
+
+r = *(float64 *) &s:>r=float80:<s=stack64:fpstack/load:asm/fldl <s:
+r += *(float64 *) &s:inplace>r=float80:<r=float80:<s=stack64:fpstack/loadarith:asm/faddl <s:
+r -= *(float64 *) &s:inplace>r=float80:<r=float80:<s=stack64:fpstack/loadarith:asm/fsubl <s:
+r *= *(float64 *) &s:inplace>r=float80:<r=float80:<s=stack64:fpstack/loadarith:asm/fmull <s:
+*(float64 *) &s = r:<r=float80:>s=stack64:fpstack/store:asm/fstl >s!nopop:asm/fstpl >s!pop:
+
+
+:stackbytes:stack128:16:
+stack128 r:var/r=stack128:
+
+r = &s:>r=int64:inplace>s=stack128:<s=stack128:asm/leaq <s,>r:
+
+((uint32 *)&r)[0] = 0:>r=stack128:asm/movl $0,>r:
+((uint32 *)&r)[1] = 0:inplace>r=stack128:<r=stack128:asm/movl $0,4+<r:
+((uint32 *)&r)[2] = 0:inplace>r=stack128:<r=stack128:asm/movl $0,8+<r:
+((uint32 *)&r)[3] = 0:inplace>r=stack128:<r=stack128:asm/movl $0,12+<r:
+
+r = ((uint32 *)&s)[0]:>r=int64:<s=stack128:asm/movl <s,>r%32:
+r = ((uint32 *)&s)[1]:>r=int64:<s=stack128:asm/movl 4+<s,>r%32:
+r = ((uint32 *)&s)[2]:>r=int64:<s=stack128:asm/movl 8+<s,>r%32:
+r = ((uint32 *)&s)[3]:>r=int64:<s=stack128:asm/movl 12+<s,>r%32:
+
+r = s:>r=int6464:<s=stack128:asm/movdqa <s,>r:
+r = s:>r=stack128:<s=int6464:asm/movdqa <s,>r:
+r = *(int128 *) (s + n):>r=int6464:<s=int64:#n:asm/movdqa #n(<s),>r:
+
+int32323232 r += s:inplace>r=int6464:<r=int6464:<s=stack128:asm/paddd <s,<r:
+uint32323232 r += s:inplace>r=int6464:<r=int6464:<s=stack128:asm/paddd <s,<r:
+int32323232 r -= s:inplace>r=int6464:<r=int6464:<s=stack128:asm/psubd <s,<r:
+uint32323232 r -= s:inplace>r=int6464:<r=int6464:<s=stack128:asm/psubd <s,<r:
+
+uint32323232 r += *(int128 *) (s + n):inplace>r=int6464:<r=int6464:<s=int64:#n:asm/paddd #n(<s),<r:
+
+
+:stackbytes:stack256:32:
+stack256 r:var/r=stack256:
+
+
+:stackbytes:stack512:64:
+stack512 r:var/r=stack512:
+
+r = &s:>r=int64:inplace>s=stack512:<s=stack512:asm/leaq <s,>r:
+
+
+enter f:enter/f:asm/.text:asm/.p2align 5:asm/.globl _#f:asm/.globl #f:asm/_#f!colon:asm/#f!colon:asm/mov %rsp,%r11:asm/and $31,%r11:asm/add $!frame,%r11:asm/sub %r11,%rsp:
+enter f stackaligned4096 n:enter/f:#n:asm/.text:asm/.p2align 5:asm/.globl _#f:asm/.globl #f:asm/_#f!colon:asm/#f!colon:asm/mov %rsp,%r11:asm/sub $#n,%r11:asm/and $4095,%r11:asm/add $!frame,%r11:asm/sub %r11,%rsp:
+leave:nofallthrough:leave:asm/add %r11,%rsp:asm/mov %rdi,%rax:asm/mov %rsi,%rdx:asm/ret:
+input r:input/r:
+output r:output/r:
+caller r:caller/r:
+
+:

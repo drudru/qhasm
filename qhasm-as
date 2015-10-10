@@ -1,0 +1,220 @@
+#!/bin/sh
+
+awk -F: '
+  {
+    ++linenum
+    line[linenum] = $0
+  }
+  function douserline(line) {
+    flen = split(line,f)
+
+    if (f[1] == "error") {
+      print "error"
+      print ".error"
+      print line
+      return
+    }
+
+    if (f[1] == "comment")
+      print "# "line
+
+    if (f[1] != "op")
+      return
+
+    pop = 0
+    reverse = 0
+
+    split("",xreg)
+    split("",vmap)
+    
+    for (j = 3;j <= flen;++j) {
+      z = f[j]
+      if (match(z,/^</)) {
+        split(z,y,/[=]/)
+        split(y[1],target,/[#]/)
+        xreg[target[1]] = y[2]
+      } else if (match(z,/^>/)) {
+        split(z,y,/[=]/)
+        split(y[1],target,/[#]/)
+        xreg[target[1]] = y[2]
+      } else if (match(z,/^vmap\//)) {
+        sub(/^vmap\//,"",z)
+	split(z,y,/[=]/)
+	vmap[y[1]] = y[2]
+      } else if (match(z,/^modify\/pop$/)) {
+        pop = 1
+      } else if (match(z,/^modify\/reverse$/)) {
+        reverse = 1
+      } else if (match(z,/^modify\/fromtop$/)) {
+        reverse = 1
+      }
+    }
+
+    gsub(/#/,":",f[2])
+
+    print ""
+    print "# qhasm: "f[2]
+
+    for (j = 3;j <= flen;++j) {
+      z = f[j]
+      if (match(z,/^asm\//)) {
+        sub(/^asm\//,"",z)
+	printok = 1
+        output1=""
+        output2=""
+        output3=""
+        stackshift = 0
+        for (k = 1;k <= length(z);++k) {
+          if (substr(z,k,4) == "!pop") {
+	    if (pop == 0) printok = 0
+            k += 3
+            continue
+	  }
+          if (substr(z,k,6) == "!nopop") {
+	    if (pop == 1) printok = 0
+            k += 5
+            continue
+	  }
+          if (substr(z,k,8) == "!reverse") {
+	    if (reverse == 0) printok = 0
+            k += 7
+            continue
+	  }
+          if (substr(z,k,10) == "!noreverse") {
+	    if (reverse == 1) printok = 0
+            k += 9
+            continue
+	  }
+          if (substr(z,k,6) == "!colon") {
+            output1 = output1 ":"
+            output2 = output2 ":"
+            output3 = output3 ":"
+            k += 5
+            continue
+          }
+          if (substr(z,k,7) == "!shift4") {
+            stackshift = 4
+            k += 6
+            continue
+          }
+          if (substr(z,k,6) == "!frame") {
+            output1 = output1 (leftbytes + stackused)
+            output2 = output2 (leftbytes + stackused)
+            output3 = output3 (leftbytes + stackused)
+            k += 5
+            continue
+          }
+          if (k <= length(z) - 1) {
+            if (substr(z,k,1) == "<") {
+              output1 = output1 "<" vmap[substr(z,k + 1,1)] "=" xreg["<" vmap[substr(z,k + 1,1)]]
+              output2 = output2 "<" vmap[substr(z,k + 1,1)] "=" reg[xreg["<" vmap[substr(z,k + 1,1)]]"+"stackshift]
+              output3 = output3 reg[xreg["<" vmap[substr(z,k + 1,1)]]"+"stackshift]
+              ++k
+              continue
+            } else if (substr(z,k,1) == ">") {
+              output1 = output1 ">" vmap[substr(z,k + 1,1)] "=" xreg[">" vmap[substr(z,k + 1,1)]]
+              output2 = output2 ">" vmap[substr(z,k + 1,1)] "=" reg[xreg[">" vmap[substr(z,k + 1,1)]]"+"stackshift]
+              output3 = output3 reg[xreg[">" vmap[substr(z,k + 1,1)]]"+"stackshift]
+              ++k
+              continue
+            } else if (substr(z,k,1) == "#") {
+              output1 = output1 vmap[substr(z,k + 1,1)]
+              output2 = output2 vmap[substr(z,k + 1,1)]
+              output3 = output3 vmap[substr(z,k + 1,1)]
+              ++k
+              continue
+            }
+          }
+          output1 = output1 substr(z,k,1)
+          output2 = output2 substr(z,k,1)
+          output3 = output3 substr(z,k,1)
+        }
+	if (printok) {
+          if (output1 != output2) print "# asm 1: "output1
+          if (output2 != output3) print "# asm 2: "output2
+          print output3
+	}
+      }
+    }
+  }
+  function stackname(i) {
+    if (stack512name && (i >= 384)) {
+      return stack512nameleft (i - 512) stack512nameright
+    }
+    if (stack256name && (i >= 128)) {
+      return stack256nameleft (i - 256) stack256nameright
+    }
+    return stacknameleft i stacknameright
+  }
+  END {
+    for (l = 1;l <= linenum;++l) {
+      flen = split(line[l],f)
+      if (f[1] == "op") {
+        for (j = 3;j <= flen;++j) {
+          z = f[j]
+          if (match(z,/^[<>]/)) {
+            split(z,y,/[=]/)
+            split(y[2],t,/#/)
+            if (t[2] > maxused[t[1]])
+              maxused[t[1]] = t[2]
+            if (t[2] < minused[t[1]])
+              minused[t[1]] = t[2]
+          }
+        }
+      } else if (f[1] == "asm") {
+        if (f[2] == "name") {
+          type = f[3]
+          for (j = 4;j <= flen;++j) {
+            ++regnum[type]
+            reg[type"#"regnum[type]"+0"] = f[j]
+            reg[type"#"regnum[type]"+4"] = f[j]
+          }
+        } else if (f[2] == "stackbytes") {
+          stackbytes[f[3]] = f[4]
+        } else if (f[2] == "leftbytes") {
+          leftbytes = f[3]
+        } else if (f[2] == "rightbytes") {
+          rightbytes = f[3]
+        } else if (f[2] == "stackalign") {
+          stackalign = f[3]
+        } else if (f[2] == "stackname") {
+          stacknameleft = f[3]
+          stacknameright = f[4]
+        } else if (f[2] == "stack256name") {
+          stack256name = 1
+          stack256nameleft = f[3]
+          stack256nameright = f[4]
+        } else if (f[2] == "stack512name") {
+          stack512name = 1
+          stack512nameleft = f[3]
+          stack512nameright = f[4]
+        } else if (f[2] == "stackargname") {
+          stackargnameleft = f[3]
+          stackargnameright = f[4]
+        }
+      }
+    }
+    stackused = 0
+    for (type in stackbytes) {
+      for (l = 1;l <= maxused[type];++l) {
+        ++regnum[type]
+        reg[type"#"regnum[type]"+0"] = stackname(stackused)
+        reg[type"#"regnum[type]"+4"] = stackname(stackused + 4)
+        stackused += stackbytes[type]
+      }
+      if (stackalign)
+        while (stackused % stackalign != 0)
+          stackused += stackbytes[type]
+    }
+    argpos = rightbytes
+    for (type in stackbytes) {
+      for (l = -1;l >= minused[type];--l) {
+        reg[type"#"l"+0"] = stackargnameleft argpos stackargnameright
+        reg[type"#"l"+4"] = stackargnameleft (argpos+4) stackargnameright
+        argpos += stackbytes[type]
+      }
+    }
+    for (l = 1;l <= linenum;++l)
+      douserline(line[l])
+  }
+'

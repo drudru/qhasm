@@ -1,0 +1,9 @@
+#!/bin/sh
+sed 's/#.*//' \
+| sed 's/:/#/g' \
+| cat PPC32-MACOS - \
+| ./qhasm-ops \
+| ./qhasm-regs \
+| grep -v '^op:livefloat80:' \
+| ./qhasm-as \
+| sed 's/^# /; /'

@@ -1,0 +1,262 @@
+:name:int32:r3:r4:r5:r6:r7:r8:r9:r10:r11:r12:r13:r14:r15:r16:r17:r18:r19:r20:r21:r22:r23:r24:r25:r26:r27:r28:r29:r30:r31:r2:
+:caller:int32:11:12:13:14:15:16:17:18:19:20:21:22:23:24:25:26:27:28:29:
+int32 r:var/r=int32:
+
+:name:float64:f0:f1:f2:f3:f4:f5:f6:f7:f8:f9:f10:f11:f12:f13:f14:f15:f16:f17:f18:f19:f20:f21:f22:f23:f24:f25:f26:f27:f28:f29:f30:f31:
+:caller:float64:15:16:17:18:19:20:21:22:23:24:25:26:27:28:29:30:31:32:
+float64 r:var/r=float64:
+
+:stackalign:16:
+:stackname::(r1):
+:rightbytes:0:
+:leftbytes:128:
+
+:stackbytes:stack32:4:
+stack32 r:var/r=stack32:
+
+:stackbytes:stack64:8:
+stack64 r:var/r=stack64:
+
+:stackbytes:stack128:16:
+stack128 r:var/r=stack128:
+
+:stackbytes:stack256:32:
+stack256 r:var/r=stack256:
+
+:stackbytes:stack512:64:
+stack512 r:var/r=stack512:
+
+:flag:<:
+:flag:>:
+:flag:=:
+:flag:carry:
+:flag:overflow:
+
+enter f:enter/f:asm/.text:asm/.align 3:asm/.globl _#f:asm/.globl #f:asm/_#f!colon:asm/#f!colon:asm/stwu r1,-!frame(r1):
+input r:input/r:
+output r:output/r:
+caller r:caller/r:
+leave:nofallthrough:leave:asm/addi r1,r1,!frame:asm/blr:
+
+f#:#f:label/f:asm/.label.#f!colon:
+goto f:#f:nofallthrough:jump/f:asm/b .label.#f:
+goto f if =:#f:<?=:jump/f:asm/beq .label.#f:
+goto f if !=:#f:<?=:jump/f:asm/bne .label.#f:
+goto f if <:#f:<?<:jump/f:asm/blt .label.#f:
+goto f if !<:#f:<?<:jump/f:asm/bge .label.#f:
+goto f if >:#f:<?>:jump/f:asm/bgt .label.#f:
+goto f if !>:#f:<?>:jump/f:asm/ble .label.#f:
+
+round to nearest:asm/mtfsfi 7,0:
+
+
+r = n:>r=int32:#n:asm/li >r,#n:
+r = -n:>r=int32:#n:asm/li >r,-#n:
+r = 65536 * n:>r=int32:#n:asm/lis >r,#n:
+
+r = &n & 0xffff0000:>r=int32:#n:asm/lis >r,hi16(#n):
+r |= &n & 0xffff:>r=int32:<r=int32:#n:asm/ori >r,<r,lo16(#n):
+
+(int32) s - n:<s=int32:#n:asm/cmpwi <s,#n:>?<:>?>:>?=:
+(uint32) s - n:<s=int32:#n:asm/cmplwi <s,#n:>?<:>?>:>?=:
+
+
+r = s:>r=int32:<s=int32:asm/mr >r,<s:
+
+r = s:>r=int32:<s=stack32:asm/lwz >r,<s:
+r = s:>r=stack32:<s=int32:asm/stw <s,>r:
+
+r = top s:>r=int32:<s=stack64:asm/lwz >r,<s:
+r = bottom s:>r=int32:<s=stack64:asm/lwz >r,!shift4<s:
+r top = s:>r=stack64:<s=int32:asm/stw <s,>r:
+r bottom = s:>r=stack64:<s=int32:asm/stw <s,!shift4>r:
+inplace r top = s:inplace>r=stack64:<r=stack64:<s=int32:asm/stw <s,<r:
+inplace r bottom = s:inplace>r=stack64:<r=stack64:<s=int32:asm/stw <s,!shift4<r:
+
+r = *(int32 *) (s + n):>r=int32:<s=int32:#n:asm/lwa >r,#n(<s):
+r = *(int32 *) (s - n):>r=int32:<s=int32:#n:asm/lwa >r,-#n(<s):
+r = *(int32 *) (s + t):>r=int32:<s=int32:<t=int32:asm/lwax >r,<s,<t:
+r = *(int32 *) (s += n):>r=int32:<s=int32:inplace>s=int32:#n:asm/lwau >r,#n(<s):
+r = *(int32 *) (s -= n):>r=int32:<s=int32:inplace>s=int32:#n:asm/lwau >r,-#n(<s):
+r = *(int32 *) (s += t):>r=int32:<s=int32:inplace>s=int32:<t=int32:asm/lwaux >r,<s,<t:
+r = *(uint32 *) (s + n):>r=int32:<s=int32:#n:asm/lwz >r,#n(<s):
+r = *(uint32 *) (s - n):>r=int32:<s=int32:#n:asm/lwz >r,-#n(<s):
+r = *(uint32 *) (s + t):>r=int32:<s=int32:<t=int32:asm/lwzx >r,<s,<t:
+r = *(uint32 *) (s += n):>r=int32:<s=int32:inplace>s=int32:#n:asm/lwzu >r,#n(<s):
+r = *(uint32 *) (s -= n):>r=int32:<s=int32:inplace>s=int32:#n:asm/lwzu >r,-#n(<s):
+r = *(uint32 *) (s += t):>r=int32:<s=int32:inplace>s=int32:<t=int32:asm/lwzux >r,<s,<t:
+*(uint32 *) (s + n) = r:<r=int32:<s=int32:#n:asm/stw <r,#n(<s):
+*(uint32 *) (s - n) = r:<r=int32:<s=int32:#n:asm/stw <r,-#n(<s):
+*(uint32 *) (s + t) = r:<r=int32:<s=int32:<t=int32:asm/stwx <r,<s,<t:
+*(uint32 *) (s += n) = r:<r=int32:<s=int32:inplace>s=int32:#n:asm/stwu <r,#n(<s):
+*(uint32 *) (s -= n) = r:<r=int32:<s=int32:inplace>s=int32:#n:asm/stwu <r,-#n(<s):
+*(uint32 *) (s += t) = r:<r=int32:<s=int32:inplace>s=int32:<t=int32:asm/stwux <r,<s,<t:
+
+r = *(int16 *) (s + n):>r=int32:<s=int32:#n:asm/lha >r,#n(<s):
+r = *(int16 *) (s - n):>r=int32:<s=int32:#n:asm/lha >r,-#n(<s):
+r = *(int16 *) (s + t):>r=int32:<s=int32:<t=int32:asm/lhax >r,<s,<t:
+r = *(int16 *) (s += n):>r=int32:<s=int32:inplace>s=int32:#n:asm/lhau >r,#n(<s):
+r = *(int16 *) (s -= n):>r=int32:<s=int32:inplace>s=int32:#n:asm/lhau >r,-#n(<s):
+r = *(int16 *) (s += t):>r=int32:<s=int32:inplace>s=int32:<t=int32:asm/lhaux >r,<s,<t:
+r = *(uint16 *) (s + n):>r=int32:<s=int32:#n:asm/lhz >r,#n(<s):
+r = *(uint16 *) (s - n):>r=int32:<s=int32:#n:asm/lhz >r,-#n(<s):
+r = *(uint16 *) (s + t):>r=int32:<s=int32:<t=int32:asm/lhzx >r,<s,<t:
+r = *(uint16 *) (s += n):>r=int32:<s=int32:inplace>s=int32:#n:asm/lhzu >r,#n(<s):
+r = *(uint16 *) (s -= n):>r=int32:<s=int32:inplace>s=int32:#n:asm/lhzu >r,-#n(<s):
+r = *(uint16 *) (s += t):>r=int32:<s=int32:inplace>s=int32:<t=int32:asm/lhzux >r,<s,<t:
+*(uint16 *) (s + n) = r:<r=int32:<s=int32:#n:asm/sth <r,#n(<s):
+*(uint16 *) (s - n) = r:<r=int32:<s=int32:#n:asm/sth <r,-#n(<s):
+*(uint16 *) (s + t) = r:<r=int32:<s=int32:<t=int32:asm/sthx <r,<s,<t:
+*(uint16 *) (s += n) = r:<r=int32:<s=int32:inplace>s=int32:#n:asm/sthu <r,#n(<s):
+*(uint16 *) (s -= n) = r:<r=int32:<s=int32:inplace>s=int32:#n:asm/sthu <r,-#n(<s):
+*(uint16 *) (s += t) = r:<r=int32:<s=int32:inplace>s=int32:<t=int32:asm/sthux <r,<s,<t:
+
+r = *(int8 *) (s + n):>r=int32:<s=int32:#n:asm/lba >r,#n(<s):
+r = *(int8 *) (s - n):>r=int32:<s=int32:#n:asm/lba >r,-#n(<s):
+r = *(int8 *) (s + t):>r=int32:<s=int32:<t=int32:asm/lbax >r,<s,<t:
+r = *(int8 *) (s += n):>r=int32:<s=int32:inplace>s=int32:#n:asm/lbau >r,#n(<s):
+r = *(int8 *) (s -= n):>r=int32:<s=int32:inplace>s=int32:#n:asm/lbau >r,-#n(<s):
+r = *(int8 *) (s += t):>r=int32:<s=int32:inplace>s=int32:<t=int32:asm/lbaux >r,<s,<t:
+r = *(uint8 *) (s + n):>r=int32:<s=int32:#n:asm/lbz >r,#n(<s):
+r = *(uint8 *) (s - n):>r=int32:<s=int32:#n:asm/lbz >r,-#n(<s):
+r = *(uint8 *) (s + t):>r=int32:<s=int32:<t=int32:asm/lbzx >r,<s,<t:
+r = *(uint8 *) (s += n):>r=int32:<s=int32:inplace>s=int32:#n:asm/lbzu >r,#n(<s):
+r = *(uint8 *) (s -= n):>r=int32:<s=int32:inplace>s=int32:#n:asm/lbzu >r,-#n(<s):
+r = *(uint8 *) (s += t):>r=int32:<s=int32:inplace>s=int32:<t=int32:asm/lbzux >r,<s,<t:
+*(uint8 *) (s + n) = r:<r=int32:<s=int32:#n:asm/stb <r,#n(<s):
+*(uint8 *) (s - n) = r:<r=int32:<s=int32:#n:asm/stb <r,-#n(<s):
+*(uint8 *) (s + t) = r:<r=int32:<s=int32:<t=int32:asm/stbx <r,<s,<t:
+*(uint8 *) (s += n) = r:<r=int32:<s=int32:inplace>s=int32:#n:asm/stbu <r,#n(<s):
+*(uint8 *) (s -= n) = r:<r=int32:<s=int32:inplace>s=int32:#n:asm/stbu <r,-#n(<s):
+*(uint8 *) (s += t) = r:<r=int32:<s=int32:inplace>s=int32:<t=int32:asm/stbux <r,<s,<t:
+
+r = *(swapendian int32 *) s:>r=int32:<s=int32:asm/lwbrx >r,0,<s:
+r = *(swapendian uint32 *) s:>r=int32:<s=int32:asm/lwbrx >r,0,<s:
+*(swapendian int32 *) s = r:<r=int32:<s=int32:asm/stwbrx <r,0,<s:
+*(swapendian uint32 *) s = r:<r=int32:<s=int32:asm/stwbrx <r,0,<s:
+
+r = s:>r=float64:<s=float64:asm/fmr >r,<s:
+r = s:>r=float64:<s=stack64:asm/lfd >r,<s:
+r = s:>r=stack64:<s=float64:asm/stfd <s,>r:
+
+r = *(float64 *) (s + n):>r=float64:<s=int32:#n:asm/lfd >r,#n(<s):
+r = *(float64 *) (s - n):>r=float64:<s=int32:#n:asm/lfd >r,-#n(<s):
+r = *(float64 *) (s + t):>r=float64:<s=int32:<t=int32:asm/lfdx >r,<s,<t:
+*(float64 *) (s + n) = r:<r=float64:<s=int32:#n:asm/stfd <r,#n(<s):
+*(float64 *) (s - n) = r:<r=float64:<s=int32:#n:asm/stfd <r,-#n(<s):
+*(float64 *) (s + t) = r:<r=float64:<s=int32:<t=int32:asm/stfdx <r,<s,<t:
+*(float64 *) (s += n) = r:<r=float64:<s=int32:inplace>s=int32:#n:asm/stfdu <r,#n(<s):
+*(float64 *) (s -= n) = r:<r=float64:<s=int32:inplace>s=int32:#n:asm/stfdu <r,-#n(<s):
+*(float64 *) (s += t) = r:<r=float64:<s=int32:inplace>s=int32:<t=int32:asm/stfdux <r,<s,<t:
+
+
+r = -s:>r=int32:<s=int32:asm/neg >r,<s:
+r = -s:>r=int32:<s=int32:asm/neg. >r,<s:>?<:>?>:>?=:
+r = -s:>r=int32:<s=int32:asm/nego >r,<s:>?overflow:
+r = -s:>r=int32:<s=int32:asm/nego. >r,<s:>?overflow:>?<:>?>:>?=:
+
+r = s | (&n & 0xffff):>r=int32:<s=int32:#n:asm/ori >r,<s,lo16(#n):
+
+(int32) s - t:<s=int32:<t=int32:asm/cmpw <s,<t:>?<:>?>:>?=:
+(uint32) s - t:<s=int32:<t=int32:asm/cmplw <s,<t:>?<:>?>:>?=:
+
+r += n:>r=int32:<r=int32:#n:asm/addi >r,<r,#n:
+r -= n:>r=int32:<r=int32:#n:asm/addi >r,<r,-#n:
+
+r = s + n:>r=int32:<s=int32:#n:asm/addi >r,<s,#n:
+r = s + n:>r=int32:<s=int32:#n:asm/addic >r,<s,#n:>?carry:
+r = s + n:>r=int32:<s=int32:#n:asm/addic. >r,<s,#n:>?<:>?>:>?=:>?carry:
+r = s - n:>r=int32:<s=int32:#n:asm/addi >r,<s,-#n:
+r = s - n:>r=int32:<s=int32:#n:asm/addic >r,<s,-#n:>?carry:
+r = n - s:>r=int32:<s=int32:#n:asm/subfic >r,<s,#n:>?carry:
+r = s - n:>r=int32:<s=int32:#n:asm/addic. >r,<s,-#n:>?<:>?>:>?=:>?carry:
+r = s + 65536 * n:>r=int32:<s=int32:#n:asm/addis >r,<s,#n:
+r = s - 65536 * n:>r=int32:<s=int32:#n:asm/addis >r,<s,-#n:
+
+r &= n:>r=int32:<r=int32:#n:asm/andi. >r,<r,#n:>?<:>?>:>?=:
+r |= n:>r=int32:<r=int32:#n:asm/ori >r,<r,#n:
+
+r = s & n:>r=int32:<s=int32:#n:asm/andi. >r,<s,#n:>?<:>?>:>?=:
+r = s & (65536 * n):>r=int32:<s=int32:#n:asm/andis. >r,<s,#n:>?<:>?>:>?=:
+r = s | n:>r=int32:<s=int32:#n:asm/ori >r,<s,#n:
+r = s | (65536 * n):>r=int32:<s=int32:#n:asm/oris >r,<s,#n:
+r = s ^ n:>r=int32:<s=int32:#n:asm/xori >r,<s,#n:
+r = s ^ (65536 * n):>r=int32:<s=int32:#n:asm/xoris >r,<s,#n:
+
+r <<= n:>r=int32:<r=int32:#n:asm/slwi >r,<r,#n:
+(uint32) r >>= n:>r=int32:<r=int32:#n:asm/srwi >r,<r,#n:
+(int32) r >>= n:>r=int32:<r=int32:#n:asm/srawi >r,<r,#n:
+
+r = s << n:>r=int32:<s=int32:#n:asm/slwi >r,<s,#n:
+r = (uint32) s >> n:>r=int32:<s=int32:#n:asm/srwi >r,<s,#n:
+r = (int32) s >> n:>r=int32:<s=int32:#n:asm/srawi >r,<s,#n:
+r = s <<< n:>r=int32:<s=int32:#n:asm/rlwinm >r,<s,#n,0xffffffff:
+r = m & (s <<< n):>r=int32:<s=int32:#n:#m:asm/rlwinm >r,<s,#n,#m:
+r bits m = s <<< n:inplace>r=int32:<r=int32:<s=int32:#n:#m:asm/rlwimi >r,<s,#n,#m:
+
+r += t:>r=int32:<r=int32:<t=int32:asm/add >r,<r,<t:
+
+r = s + t:>r=int32:<s=int32:<t=int32:asm/add >r,<s,<t:
+r = s + t:>r=int32:<s=int32:<t=int32:asm/add. >r,<s,<t:>?<:>?>:>?=:
+r = s + t:>r=int32:<s=int32:<t=int32:asm/addo >r,<s,<t:>?overflow:
+r = s + t:>r=int32:<s=int32:<t=int32:asm/addo. >r,<s,<t:>?overflow:>?<:>?>:>?=:
+r = s + t:>r=int32:<s=int32:<t=int32:asm/addc >r,<s,<t:>?carry:
+r = s + t:>r=int32:<s=int32:<t=int32:asm/addc. >r,<s,<t:>?<:>?>:>?=:>?carry:
+r = s + t:>r=int32:<s=int32:<t=int32:asm/addco >r,<s,<t:>?overflow:>?carry:
+r = s + t:>r=int32:<s=int32:<t=int32:asm/addco. >r,<s,<t:>?overflow:>?<:>?>:>?=:>?carry:
+r = s + t + carry:>r=int32:<s=int32:<t=int32:asm/adde >r,<s,<t:>?carry:
+r = s + t + carry:>r=int32:<s=int32:<t=int32:asm/adde. >r,<s,<t:>?<:>?>:>?=:>?carry:
+r = s + t + carry:>r=int32:<s=int32:<t=int32:asm/addeo >r,<s,<t:>?overflow:>?carry:
+r = s + t + carry:>r=int32:<s=int32:<t=int32:asm/addeo. >r,<s,<t:>?overflow:>?<:>?>:>?=:>?carry:
+
+r &= t:>r=int32:<r=int32:<t=int32:asm/and >r,<r,<t:
+r &= ~t:>r=int32:<r=int32:<t=int32:asm/andc >r,<r,<t:
+r |= t:>r=int32:<r=int32:<t=int32:asm/or >r,<r,<t:
+r |= ~t:>r=int32:<r=int32:<t=int32:asm/orc >r,<r,<t:
+
+r = s & t:>r=int32:<s=int32:<t=int32:asm/and >r,<s,<t:
+r = s & ~t:>r=int32:<s=int32:<t=int32:asm/andc >r,<s,<t:
+r = s ~& t:>r=int32:<s=int32:<t=int32:asm/nand >r,<s,<t:
+r = s | t:>r=int32:<s=int32:<t=int32:asm/or >r,<s,<t:
+r = s | ~t:>r=int32:<s=int32:<t=int32:asm/orc >r,<s,<t:
+r = s ~| t:>r=int32:<s=int32:<t=int32:asm/nor >r,<s,<t:
+r = s ^ t:>r=int32:<s=int32:<t=int32:asm/xor >r,<s,<t:
+r = s ^ ~t:>r=int32:<s=int32:<t=int32:asm/eqv >r,<s,<t:
+r = s ~^ t:>r=int32:<s=int32:<t=int32:asm/eqv >r,<s,<t:
+
+r -= t:>r=int32:<r=int32:<t=int32:asm/subf >r,<t,<r:
+
+r = s - t:>r=int32:<s=int32:<t=int32:asm/subf >r,<t,<s:
+r = s - t:>r=int32:<s=int32:<t=int32:asm/subf. >r,<t,<s:>?<:>?>:>?=:
+r = s - t:>r=int32:<s=int32:<t=int32:asm/subfo >r,<t,<s:>?overflow:
+r = s - t:>r=int32:<s=int32:<t=int32:asm/subfo. >r,<t,<s:>?overflow:>?<:>?>:>?=:
+r = s - t:>r=int32:<s=int32:<t=int32:asm/subfc >r,<t,<s:>?carry:
+r = s - t:>r=int32:<s=int32:<t=int32:asm/subfc. >r,<t,<s:>?<:>?>:>?=:>?carry:
+r = s - t:>r=int32:<s=int32:<t=int32:asm/subfco >r,<t,<s:>?overflow:>?carry:
+r = s - t:>r=int32:<s=int32:<t=int32:asm/subfco. >r,<t,<s:>?overflow:>?<:>?>:>?=:>?carry:
+r = s - t + carry - 1:>r=int32:<s=int32:<t=int32:asm/subfe >r,<t,<s:>?carry:
+r = s - t + carry - 1:>r=int32:<s=int32:<t=int32:asm/subfe. >r,<t,<s:>?<:>?>:>?=:>?carry:
+r = s - t + carry - 1:>r=int32:<s=int32:<t=int32:asm/subfeo >r,<t,<s:>?overflow:>?carry:
+r = s - t + carry - 1:>r=int32:<s=int32:<t=int32:asm/subfeo. >r,<t,<s:>?overflow:>?<:>?>:>?=:>?carry:
+
+r = s << t:>r=int32:<s=int32:<t=int32:asm/slwi >r,<s,<t:
+r = (uint32) s >> t:>r=int32:<s=int32:<t=int32:asm/srwi >r,<s,<t:
+r = (int32) s >> t:>r=int32:<s=int32:<t=int32:asm/srawi >r,<s,<t:
+r = s <<< t:>r=int32:<s=int32:<t=int32:asm/rlwinm >r,<s,<t,0xffffffff:
+r = m & (s <<< t):>r=int32:<s=int32:<t=int32:#m:asm/rlwinm >r,<s,<t,#m:
+r bits m = s <<< t:inplace>r=int32:<r=int32:<s=int32:<t=int32:#m:asm/rlwimi >r,<s,<t,#m:
+
+r += t:>r=float64:<r=float64:<t=float64:asm/fadd >r,<r,<t:
+r -= t:>r=float64:<r=float64:<t=float64:asm/fsub >r,<r,<t:
+r *= t:>r=float64:<r=float64:<t=float64:asm/fmul >r,<r,<t:
+r += s * t:>r=float64:<r=float64:<s=float64:<t=float64:asm/fmadd >r,<s,<t,<r:
+
+r = s + t:>r=float64:<s=float64:<t=float64:asm/fadd >r,<s,<t:
+r = s - t:>r=float64:<s=float64:<t=float64:asm/fsub >r,<s,<t:
+r = s * t:>r=float64:<s=float64:<t=float64:asm/fmul >r,<s,<t:
+r = s * t + u:>r=float64:<s=float64:<t=float64:<u=float64:asm/fmadd >r,<s,<t,<u:
+r = s * t - u:>r=float64:<s=float64:<t=float64:<u=float64:asm/fmsub >r,<s,<t,<u:
+r = -(s * t + u):>r=float64:<s=float64:<t=float64:<u=float64:asm/fnmadd >r,<s,<t,<u:
+r = -(s * t - u):>r=float64:<s=float64:<t=float64:<u=float64:asm/fnmsub >r,<s,<t,<u:
+
+:
